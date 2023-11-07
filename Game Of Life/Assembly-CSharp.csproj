@@ -46,12 +46,18 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+     <Compile Include="Assets\Scripts\Traditional\GameSpawner.cs" />
+     <Compile Include="Assets\Scripts\Traditional\GameOfLifeCell.cs" />
+     <Compile Include="Assets\Scripts\Traditional\Direction.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Settings" />
      <Folder Include="Assets\Scenes" />
+     <Folder Include="Assets\Scripts\Traditional" />
+     <Folder Include="Assets\Prefabs" />
      <Folder Include="Assets\TutorialInfo\Scripts" />
      <Folder Include="Assets\TutorialInfo\Icons" />
      <Folder Include="Assets\TutorialInfo" />
+     <Folder Include="Assets\Scripts" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.10f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
