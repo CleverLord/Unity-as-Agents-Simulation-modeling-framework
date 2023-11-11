@@ -45,13 +45,10 @@ namespace GameOfLife.Traditional
         public int GetAliveNeighborsCount() => neighbors.Count(neighbor => neighbor.isAlive);
 
         private void SetState(bool newState) {
+            //This works since isAlive.get() returns the current state, but isAlive.set(val) is setting future state
+            isAlive = newState;
             if (newState != isAlive)
-            {
-                isAlive = newState;
                 RunStateChangeCallbacks();
-            }
-            else 
-                isAlive = newState; // this ensures that the dual buffer is updated
         }
 
         public void SetInitialState(bool initialState) {
