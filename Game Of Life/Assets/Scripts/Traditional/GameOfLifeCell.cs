@@ -19,14 +19,13 @@ namespace GameOfLife.Traditional
         public bool isAlive
         {
             //get refers to the current state, so it's comparing to the 0
-            get => Time.frameCount % 2 == 0 ? isAliveEvenFrame : isAliveOddFrame ;
+            get => Time.frameCount % 2 == 0 ? isAliveEvenFrame : isAliveOddFrame;
             //set refers to the next state, so it's comparing to the 1
             set => (Time.frameCount % 2 == 0 ? ref isAliveOddFrame : ref isAliveEvenFrame) = value;
         }
         public bool isAliveNextFrame
         {
             get => Time.frameCount % 2 == 0 ? isAliveOddFrame : isAliveEvenFrame;
-            set => (Time.frameCount % 2 == 0 ? ref isAliveEvenFrame : ref isAliveOddFrame) = value;
         }
 
         public void Update() {
@@ -46,10 +45,13 @@ namespace GameOfLife.Traditional
         public int GetAliveNeighborsCount() => neighbors.Count(neighbor => neighbor.isAlive);
 
         private void SetState(bool newState) {
-            if (newState == isAlive)
-                return;
-            isAlive = newState;
-            RunStateChangeCallbacks();
+            if (newState != isAlive)
+            {
+                isAlive = newState;
+                RunStateChangeCallbacks();
+            }
+            else 
+                isAlive = newState; // this ensures that the dual buffer is updated
         }
 
         public void SetInitialState(bool initialState) {
