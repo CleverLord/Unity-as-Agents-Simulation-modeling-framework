@@ -3,33 +3,63 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using GameOfLife.Commons;
 
-namespace Traditional
+namespace GameOfLife.Traditional
 {
     public class GameOfLifeCell : MonoBehaviour
     {
-        public Dictionary<Direction, GameOfLifeCell> neighbors = new Dictionary<Direction, GameOfLifeCell>();
-        public bool isAlive = false;
-        private bool willBeAlive = false;
+        public List<GameOfLifeCell> neighbors = new List<GameOfLifeCell>();
+        //Implement alive state as a double buffer
+        public bool isAliveEvenFrame = false;
+        public bool isAliveOddFrame = false;
+        public string isAliveBoolName;
         void Start() { }
 
-        //Function to handle logic
-        private void FixedUpdate() {
-            int aliveNeighborsCount = GetAliveNeighborsCount();
-            willBeAlive = isAlive ? aliveNeighborsCount is 2 or 3 : aliveNeighborsCount is 3;
+        public bool isAlive
+        {
+            //get refers to the current state, so it's comparing to the 0
+            get => Time.frameCount % 2 == 0 ? isAliveEvenFrame : isAliveOddFrame ;
+            //set refers to the next state, so it's comparing to the 1
+            set => (Time.frameCount % 2 == 0 ? ref isAliveOddFrame : ref isAliveEvenFrame) = value;
+        }
+        public bool isAliveNextFrame
+        {
+            get => Time.frameCount % 2 == 0 ? isAliveOddFrame : isAliveEvenFrame;
+            set => (Time.frameCount % 2 == 0 ? ref isAliveEvenFrame : ref isAliveOddFrame) = value;
         }
 
-        //Function to update visuals
         public void Update() {
-            if (willBeAlive != isAlive)
-                ChangeState(willBeAlive);
+            int frameNumber = Time.frameCount;
+            isAliveBoolName = Time.frameCount % 2 == 0 ? "isAliveEvenFrame" : "isAliveOddFrame";
+            if (frameNumber < 2)
+                return;
+            UpdateLogic();
         }
 
-        int GetAliveNeighborsCount() => neighbors.Values.Count(neighbor => neighbor.isAlive);
+        public void UpdateLogic() {
+            int aliveNeighborsCount = GetAliveNeighborsCount();
+            bool willBeAlive = isAlive ? aliveNeighborsCount is 2 or 3 : aliveNeighborsCount is 3;
+            SetState(willBeAlive);
+        }
 
-        public void ChangeState(bool newState) {
+        public int GetAliveNeighborsCount() => neighbors.Count(neighbor => neighbor.isAlive);
+
+        private void SetState(bool newState) {
+            if (newState == isAlive)
+                return;
             isAlive = newState;
-            if (isAlive)
+            RunStateChangeCallbacks();
+        }
+
+        public void SetInitialState(bool initialState) {
+            isAliveEvenFrame = initialState;
+            isAliveOddFrame = initialState;
+            RunStateChangeCallbacks();
+        }
+
+        private void RunStateChangeCallbacks() {
+            if (isAliveNextFrame)
                 OnBecomeAlive();
             else
                 OnBecomeDead();
@@ -39,7 +69,15 @@ namespace Traditional
         public MeshRenderer meshRenderer;
         public Material aliveMaterial;
         public Material deadMaterial;
-        public void OnBecomeAlive() { meshRenderer.material = aliveMaterial; }
-        public void OnBecomeDead() { meshRenderer.material = deadMaterial; }
+
+        protected void OnBecomeAlive() {
+            meshRenderer.material = aliveMaterial;
+            //Debug.Log("Cell became alive");
+        }
+
+        protected void OnBecomeDead() {
+            meshRenderer.material = deadMaterial;
+            //Debug.Log("Cell became dead");
+        }
     }
 }
