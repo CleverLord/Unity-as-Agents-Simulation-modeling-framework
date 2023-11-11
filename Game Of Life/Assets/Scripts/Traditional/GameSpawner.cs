@@ -17,7 +17,13 @@ namespace GameOfLife.Traditional
             GetAttributesFromCommandLine();
             SpawnCells();
         }
-
+        public void Update() {
+            if (Time.frameCount == iterationCount)
+            {
+                Debug.LogWarningFormat("Reached iteration count: {0} in time: {1}", iterationCount, Time.time);
+                //Application.Quit();
+            }
+        }
         void GetAttributesFromCommandLine() {
             if (!CommandLineDataExtractor.GetIterationCount(ref iterationCount))
             {
@@ -40,9 +46,8 @@ namespace GameOfLife.Traditional
             mapInitialState[2,2] = true;
             mapInitialState[2,1] = true;
             mapInitialState[1,0] = true;
-            
         }
-
+        
         private void SpawnCells() {
             grid = new GameOfLifeCell[gridSize.x, gridSize.y];
             for (int x = 0; x < gridSize.x; x++)
