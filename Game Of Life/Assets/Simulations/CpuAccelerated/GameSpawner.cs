@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using GameOfLife.Commons;
 using UnityEngine.Serialization;
@@ -13,6 +14,7 @@ namespace GameOfLife.CpuAccelerated
         public float cellSize = 1f;
         public float cellSpacing = 0f;
         public GameOfLifeCell[,] grid;
+        public List<GameOfLifeCell> gridList;
         public bool[,] mapState;
         public int iterationCount = 100;
 
@@ -62,7 +64,11 @@ namespace GameOfLife.CpuAccelerated
             grid = new GameOfLifeCell[gridSize.x, gridSize.y];
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)
+            {
                 grid[x, y] = SpawnCell(x, y, mapState[x, y]);
+                gridList.Add(grid[x, y]);
+            }
+
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)
                 ConnectNeighbours(grid[x, y], x, y);
@@ -73,6 +79,7 @@ namespace GameOfLife.CpuAccelerated
             GameObject cell = Instantiate(cellPrefab, position, Quaternion.identity, transform);
             GameOfLifeCell golcell = cell.GetComponent<GameOfLifeCell>();
             golcell.SetInitialState(isAlive);
+            golcell.positionInGrid = new Vector2Int(x, y);
             return golcell;
         }
 
@@ -87,15 +94,14 @@ namespace GameOfLife.CpuAccelerated
 
         public void UpdateLogic() {
             bool[,] newMapState = new bool[gridSize.x, gridSize.y];
-            for (int x = 0; x < gridSize.x; x++)
-            for (int y = 0; y < gridSize.y; y++)
+            Parallel.ForEach(gridList, golc =>
             {
-                GameOfLifeCell golc = grid[x, y];
                 bool willBeAlive = GetNewStateForCell(golc);
-                newMapState[x, y] = willBeAlive;
-            }
-
+                newMapState[golc.positionInGrid.x, golc.positionInGrid.y] = willBeAlive;
+            });
             mapState = newMapState;
+            
+            //Following code cannot be accelerated,since visuals must be updated on main thread
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)
                 grid[x, y].SetState(mapState[x, y]);
