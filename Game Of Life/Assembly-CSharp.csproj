@@ -48,6 +48,7 @@
      <Compile Include="Assets\Simulations\PureCpu\GameOfLife.cs" />
      <Compile Include="Assets\Simulations\CpuAccelerated\GameSpawner.cs" />
      <Compile Include="Assets\Scripts\CommandLineDataExtractor.cs" />
+     <Compile Include="Assets\Simulations\Commons\Defaults.cs" />
      <Compile Include="Assets\Scripts\DelegateTest.cs" />
      <Compile Include="Assets\Simulations\Masterscript\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\Traditional\GameOfLifeCell.cs" />

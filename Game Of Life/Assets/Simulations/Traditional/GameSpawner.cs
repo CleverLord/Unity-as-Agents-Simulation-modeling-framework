@@ -27,12 +27,13 @@ namespace GameOfLife.Traditional
         void GetAttributesFromCommandLine() {
             if (!CommandLineDataExtractor.GetIterationCount(ref iterationCount))
             {
-                iterationCount = 100;
+                iterationCount = Defaults.Instance.iterationCount;
                 Debug.LogWarning("Iteration count not found in command line arguments. Using default value: " + iterationCount);
             }
             if(!CommandLineDataExtractor.GetMap(ref mapInitialState))
             {
                 Debug.LogWarning("Map not found in command line arguments. Using default value.");
+                gridSize = Defaults.Instance.gridSize;
                 GetMockData();
             }
             gridSize = new Vector2Int(mapInitialState.GetLength(0), mapInitialState.GetLength(1));

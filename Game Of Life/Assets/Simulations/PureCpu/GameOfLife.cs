@@ -33,7 +33,7 @@ namespace GameOfLife.PureCpu
         void GetAttributesFromCommandLine() {
             if (!CommandLineDataExtractor.GetIterationCount(ref iterationCount))
             {
-                iterationCount = 100;
+                iterationCount = Defaults.Instance.iterationCount;
                 Debug.LogWarning("Iteration count not found in command line arguments. Using default value: " +
                                  iterationCount);
             }
@@ -41,6 +41,7 @@ namespace GameOfLife.PureCpu
             if (!CommandLineDataExtractor.GetMap(ref mapState))
             {
                 Debug.LogWarning("Map not found in command line arguments. Using default value.");
+                gridSize = Defaults.Instance.gridSize;
                 GetMockData();
             }
 
@@ -73,7 +74,7 @@ namespace GameOfLife.PureCpu
 
         GameOfLifeCell SpawnCell(int x, int y, bool isAlive) {
             GameOfLifeCell golcell = new GameOfLifeCell();
-            golcell.isAlive=isAlive;
+            golcell.isAlive = isAlive;
             golcell.positionInGrid = new Vector2Int(x, y);
             return golcell;
         }
@@ -87,23 +88,33 @@ namespace GameOfLife.PureCpu
             golc.neighbours = neighbours;
         }
 
-        public void UpdateLogic() {
-            bool[,] newMapState = new bool[gridSize.x, gridSize.y];
-            Parallel.ForEach(gridList, golc =>
-            {
-                bool willBeAlive = GetNewStateForCell(golc);
-                newMapState[golc.positionInGrid.x, golc.positionInGrid.y] = willBeAlive;
-            });
-            mapState = newMapState;
-            Parallel.ForEach(gridList, golc =>
-            {
-                golc.isAlive= mapState[golc.positionInGrid.x, golc.positionInGrid.y];
-            });
+        void ParalelForeachTask(GameOfLifeCell golc) {
+            bool willBeAlive = GetNewStateForCell(golc);
+            newMapState[golc.positionInGrid.x, golc.positionInGrid.y] = willBeAlive;
         }
 
+        private volatile bool[,] newMapState;
+ 
+        void ParallelForeachTask2(GameOfLifeCell golc) {
+            golc.isAlive = mapState[golc.positionInGrid.x, golc.positionInGrid.y];
+        }
+        public void UpdateLogic() {
+            newMapState = new bool[gridSize.x, gridSize.y];
+            Parallel.ForEach(gridList, ParalelForeachTask);
+            mapState = newMapState;
+            Parallel.ForEach(gridList, ParallelForeachTask2);
+        }
+        
         public bool GetNewStateForCell(GameOfLifeCell golc) {
-            List<bool> neighbours = golc.neighbours.Select(n => n.isAlive).ToList();
-            int aliveNeighbours = neighbours.Count(n => n);
+            //int aliveNeighbours = golc.neighbours.Count(neighbour => neighbour.isAlive);
+            int aliveNeighbours = 0;
+            for (int i = 0; i < golc.neighbours.Count; i++)
+            {
+                if (golc.neighbours[i].isAlive)
+                {
+                    aliveNeighbours++;
+                }
+            }
             bool willBeAlive = golc.isAlive ? aliveNeighbours is 2 or 3 : aliveNeighbours is 3;
             return willBeAlive;
         }
