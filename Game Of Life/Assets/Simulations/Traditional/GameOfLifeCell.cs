@@ -29,10 +29,7 @@ namespace GameOfLife.Traditional
         }
 
         public void Update() {
-            int frameNumber = Time.frameCount;
             isAliveBoolName = Time.frameCount % 2 == 0 ? "isAliveEvenFrame" : "isAliveOddFrame";
-            if (frameNumber < 2)
-                return;
             UpdateLogic();
         }
 

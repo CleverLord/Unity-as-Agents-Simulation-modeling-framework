@@ -45,27 +45,26 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.10f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Simulations\CpuAccelerated\GameSpawner.cs" />
      <Compile Include="Assets\Scripts\CommandLineDataExtractor.cs" />
      <Compile Include="Assets\Scripts\DelegateTest.cs" />
      <Compile Include="Assets\Simulations\Masterscript\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\Traditional\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\Masterscript\GameSpawner.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+     <Compile Include="Assets\Simulations\CpuAccelerated\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\Traditional\GameSpawner.cs" />
      <Compile Include="Assets\Scripts\Direction.cs" />
      <Folder Include="Assets" />
-     <Folder Include="Assets\Cells" />
      <Folder Include="Assets\Settings" />
+     <Folder Include="Assets\Simulations\CpuAccelerated" />
      <Folder Include="Assets\Scenes" />
      <Folder Include="Assets\Simulations\Masterscript" />
-     <Folder Include="Assets\Cells\Centralized" />
-     <Folder Include="Assets\Cells\Traditional" />
+     <Folder Include="Assets\Simulations\Commons" />
      <Folder Include="Assets\Simulations\Traditional" />
-     <Folder Include="Assets\Prefabs" />
      <Folder Include="Assets\TutorialInfo\Scripts" />
      <Folder Include="Assets\TutorialInfo\Icons" />
      <Folder Include="Assets\TutorialInfo" />
-     <Folder Include="Assets\Cells\Commons" />
      <Folder Include="Assets\Simulations" />
      <Folder Include="Assets\Scripts" />
      <Reference Include="UnityEngine">

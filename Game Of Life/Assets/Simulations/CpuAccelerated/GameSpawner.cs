@@ -4,7 +4,7 @@ using UnityEngine;
 using GameOfLife.Commons;
 using UnityEngine.Serialization;
 
-namespace GameOfLife.MasterScript
+namespace GameOfLife.CpuAccelerated
 {
     public class GameSpawner : MonoBehaviour
     {
@@ -27,6 +27,7 @@ namespace GameOfLife.MasterScript
                 Debug.LogWarningFormat("Reached iteration count: {0} in time: {1}", iterationCount, Time.time);
                 //Application.Quit();
             }
+
             UpdateLogic();
         }
 
