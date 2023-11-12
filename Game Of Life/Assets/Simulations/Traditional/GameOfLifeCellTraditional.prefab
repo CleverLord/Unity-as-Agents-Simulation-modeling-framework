@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5725085446858037218}
   - component: {fileID: 203387816374089900}
   m_Layer: 0
-  m_Name: GameOfLifeCell
+  m_Name: GameOfLifeCellTraditional
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddc9f4a7ac77b0c409cdd3360f7b951b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAlive: 0
+  neighbors: []
+  isAliveEvenFrame: 0
+  isAliveOddFrame: 0
+  isAliveBoolName: 
   meshRenderer: {fileID: 8835338609777263939}
   aliveMaterial: {fileID: 2100000, guid: a9ac82866bf4a7348963b4825e3fecdf, type: 2}
   deadMaterial: {fileID: 2100000, guid: edc78bf8804d8c0418a70e663196dc5f, type: 2}
