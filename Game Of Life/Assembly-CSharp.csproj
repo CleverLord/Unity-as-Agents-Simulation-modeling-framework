@@ -45,6 +45,7 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.10f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Simulations\PureCpu\GameOfLife.cs" />
      <Compile Include="Assets\Simulations\CpuAccelerated\GameSpawner.cs" />
      <Compile Include="Assets\Scripts\CommandLineDataExtractor.cs" />
      <Compile Include="Assets\Scripts\DelegateTest.cs" />
@@ -53,6 +54,7 @@
      <Compile Include="Assets\Simulations\Masterscript\GameSpawner.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
      <Compile Include="Assets\Simulations\CpuAccelerated\GameOfLifeCell.cs" />
+     <Compile Include="Assets\Simulations\PureCpu\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\Traditional\GameSpawner.cs" />
      <Compile Include="Assets\Scripts\Direction.cs" />
      <Folder Include="Assets" />
@@ -67,6 +69,7 @@
      <Folder Include="Assets\TutorialInfo" />
      <Folder Include="Assets\Simulations" />
      <Folder Include="Assets\Scripts" />
+     <Folder Include="Assets\Simulations\PureCpu" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.10f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
