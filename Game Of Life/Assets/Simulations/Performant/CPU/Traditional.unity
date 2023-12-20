@@ -468,14 +468,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1391653740}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98721bb2616fd194bbe8e293663781f5, type: 3}
+  m_Script: {fileID: 11500000, guid: 80a168b00d097d643b16a6e22350e61f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellPrefab: {fileID: 3080482792163556964, guid: e3580039d4abc1744b9da16d67a9c24d,
+  cellPrefab: {fileID: 3080482792163556964, guid: 2207773bc0e40e54e8d503ccd528905d,
     type: 3}
   gridSize: {x: 32, y: 18}
   cellSize: 1
   cellSpacing: 0
+  gridList: []
   iterationCount: 100
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Linq;
 using GameOfLife.Commons;
 
-namespace GameOfLife.Traditional
+namespace GameOfLife.Simple
 {
     public class GameOfLifeCell : MonoBehaviour
     {
@@ -14,7 +14,6 @@ namespace GameOfLife.Traditional
         public Vector2Int positionInGrid;
         
         public void SetState(bool newState) {
-            //This works since isAlive.get() returns the current state, but isAlive.set(val) is setting future state
             if (newState != isAlive)
             {
                 isAlive = newState;

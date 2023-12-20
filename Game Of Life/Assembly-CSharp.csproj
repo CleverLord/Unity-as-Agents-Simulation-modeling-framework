@@ -45,34 +45,34 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.13f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Simulations\Performant\CPU\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\DoubleBuffer\GameSpawner.cs" />
-     <Compile Include="Assets\Simulations\PureCpu\GameOfLife.cs" />
      <Compile Include="Assets\Simulations\Commons\GridMap\GridMap.cs" />
+     <Compile Include="Assets\Simulations\Simple\GameOfLifeCell.cs" />
      <Compile Include="Assets\Scripts\CommandLineDataExtractor.cs" />
+     <Compile Include="Assets\Simulations\Performant\CPU\GameSpawner.cs" />
      <Compile Include="Assets\Scripts\DelegateTest.cs" />
-     <Compile Include="Assets\Simulations\Masterscript\GameOfLifeCell.cs" />
-     <Compile Include="Assets\Simulations\Traditional\GameOfLifeCell.cs" />
-     <Compile Include="Assets\Simulations\Masterscript\GameSpawner.cs" />
+     <Compile Include="Assets\Simulations\Simple\GameManager.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
      <Compile Include="Assets\Simulations\Commons\GridMap\GridMapEditor.cs" />
-     <Compile Include="Assets\Simulations\PureCpu\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\DoubleBuffer\GameOfLifeCell.cs" />
-     <Compile Include="Assets\Simulations\Traditional\GameSpawner.cs" />
      <Compile Include="Assets\Scripts\Direction.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Settings" />
-     <Folder Include="Assets\Simulations\Traditional" />
+     <Folder Include="Assets\Simulations\Simple" />
      <Folder Include="Assets\Scenes" />
-     <Folder Include="Assets\Simulations\Masterscript" />
+     <Folder Include="Assets\Simulations\Performant\CPU" />
+     <None Include="Assets\Simulations\Performant\GPU\GameOfLifeShader.shader" />
      <Folder Include="Assets\Simulations\Commons" />
      <Folder Include="Assets\Simulations\DoubleBuffer" />
      <Folder Include="Assets\Simulations\Commons\GridMap" />
+     <Folder Include="Assets\Simulations\Performant" />
+     <Folder Include="Assets\Simulations\Performant\GPU" />
      <Folder Include="Assets\TutorialInfo\Scripts" />
      <Folder Include="Assets\TutorialInfo\Icons" />
      <Folder Include="Assets\TutorialInfo" />
      <Folder Include="Assets\Simulations" />
      <Folder Include="Assets\Scripts" />
-     <Folder Include="Assets\Simulations\PureCpu" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.13f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

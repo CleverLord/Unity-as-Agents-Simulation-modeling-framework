@@ -5,15 +5,15 @@ using UnityEngine;
 using System.Linq;
 using GameOfLife.Commons;
 
-namespace GameOfLife.MasterScript
+namespace GameOfLife.Performant
 {
     public class GameOfLifeCell : MonoBehaviour
     {
         public bool isAlive;
         public List<GameOfLifeCell> neighbours;
-
+        public Vector2Int positionInGrid;
+        
         public void SetState(bool newState) {
-            //This works since isAlive.get() returns the current state, but isAlive.set(val) is setting future state
             if (newState != isAlive)
             {
                 isAlive = newState;

@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2048154674367318695}
-  - component: {fileID: 121153567038643433}
+  - component: {fileID: 6975317334032520731}
   m_Layer: 0
-  m_Name: GameOfLifeCellMasterscript
+  m_Name: GameOfLifeCellTraditional
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,7 +33,7 @@ Transform:
   - {fileID: 2298843412423348830}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &121153567038643433
+--- !u!114 &6975317334032520731
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,11 +42,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3080482792163556964}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16387706c12e31042b250ca24073b9b1, type: 3}
+  m_Script: {fileID: 11500000, guid: 7dc13d3739c05a440822d58c43addf3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isAlive: 0
   neighbours: []
+  positionInGrid: {x: 0, y: 0}
   meshRenderer: {fileID: 8456190114748841868}
   aliveMaterial: {fileID: 2100000, guid: a9ac82866bf4a7348963b4825e3fecdf, type: 2}
   deadMaterial: {fileID: 2100000, guid: edc78bf8804d8c0418a70e663196dc5f, type: 2}

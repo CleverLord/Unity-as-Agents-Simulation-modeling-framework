@@ -2,3 +2,4 @@ Przy tym rozwiązaniu, okazuje się że mimo włączonej pauzy w edytorze, pierw
 Można je znaleźć w l33 w GameOfLifeCell.cs
             if(Time.frameCount<2)
                 return;
+
