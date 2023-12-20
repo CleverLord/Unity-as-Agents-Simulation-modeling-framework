@@ -47,20 +47,20 @@
   <ItemGroup>
      <Compile Include="Assets\Simulations\DoubleBuffer\GameSpawner.cs" />
      <Compile Include="Assets\Simulations\PureCpu\GameOfLife.cs" />
-     <Compile Include="Assets\Simulations\CpuAccelerated\GameSpawner.cs" />
      <Compile Include="Assets\Scripts\CommandLineDataExtractor.cs" />
      <Compile Include="Assets\Simulations\Commons\Defaults.cs" />
      <Compile Include="Assets\Scripts\DelegateTest.cs" />
      <Compile Include="Assets\Simulations\Masterscript\GameOfLifeCell.cs" />
+     <Compile Include="Assets\Simulations\Traditional\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\Masterscript\GameSpawner.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
-     <Compile Include="Assets\Simulations\CpuAccelerated\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\PureCpu\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\DoubleBuffer\GameOfLifeCell.cs" />
+     <Compile Include="Assets\Simulations\Traditional\GameSpawner.cs" />
      <Compile Include="Assets\Scripts\Direction.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Settings" />
-     <Folder Include="Assets\Simulations\CpuAccelerated" />
+     <Folder Include="Assets\Simulations\Traditional" />
      <Folder Include="Assets\Scenes" />
      <Folder Include="Assets\Simulations\Masterscript" />
      <Folder Include="Assets\Simulations\Commons" />

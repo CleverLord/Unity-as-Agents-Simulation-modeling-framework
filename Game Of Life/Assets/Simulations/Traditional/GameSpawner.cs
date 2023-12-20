@@ -5,7 +5,7 @@ using UnityEngine;
 using GameOfLife.Commons;
 using UnityEngine.Serialization;
 
-namespace GameOfLife.CpuAccelerated
+namespace GameOfLife.Traditional
 {
     public class GameSpawner : MonoBehaviour
     {

@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Linq;
 using GameOfLife.Commons;
 
-namespace GameOfLife.CpuAccelerated
+namespace GameOfLife.Traditional
 {
     public class GameOfLifeCell : MonoBehaviour
     {
