@@ -2,7 +2,7 @@
 using GameOfLife.Commons;
 using UnityEngine.Serialization;
 
-namespace GameOfLife.Traditional
+namespace GameOfLife.DoubleBuffer
 {
     public class GameSpawner : MonoBehaviour
     {

@@ -45,18 +45,18 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.13f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Simulations\DoubleBuffer\GameSpawner.cs" />
      <Compile Include="Assets\Simulations\PureCpu\GameOfLife.cs" />
      <Compile Include="Assets\Simulations\CpuAccelerated\GameSpawner.cs" />
      <Compile Include="Assets\Scripts\CommandLineDataExtractor.cs" />
      <Compile Include="Assets\Simulations\Commons\Defaults.cs" />
      <Compile Include="Assets\Scripts\DelegateTest.cs" />
      <Compile Include="Assets\Simulations\Masterscript\GameOfLifeCell.cs" />
-     <Compile Include="Assets\Simulations\Traditional\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\Masterscript\GameSpawner.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
      <Compile Include="Assets\Simulations\CpuAccelerated\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\PureCpu\GameOfLifeCell.cs" />
-     <Compile Include="Assets\Simulations\Traditional\GameSpawner.cs" />
+     <Compile Include="Assets\Simulations\DoubleBuffer\GameOfLifeCell.cs" />
      <Compile Include="Assets\Scripts\Direction.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Settings" />
@@ -64,7 +64,7 @@
      <Folder Include="Assets\Scenes" />
      <Folder Include="Assets\Simulations\Masterscript" />
      <Folder Include="Assets\Simulations\Commons" />
-     <Folder Include="Assets\Simulations\Traditional" />
+     <Folder Include="Assets\Simulations\DoubleBuffer" />
      <Folder Include="Assets\TutorialInfo\Scripts" />
      <Folder Include="Assets\TutorialInfo\Icons" />
      <Folder Include="Assets\TutorialInfo" />
@@ -319,6 +319,15 @@
      </Reference>
      <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
      <HintPath>C:\Users\krzys\Documents\GitHub\Unity-as-Agents-Simulation-modeling-framework\Game Of Life\Library\PackageCache\com.unity.visualscripting@1.9.1\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Android.Types">
+     <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.13f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Android.Gradle">
+     <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.13f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Android.GradleProject">
+     <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.13f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.GradleProject.dll</HintPath>
      </Reference>
      <Reference Include="netstandard">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.13f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>

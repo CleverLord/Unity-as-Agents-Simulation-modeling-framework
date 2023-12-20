@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Linq;
 using GameOfLife.Commons;
 
-namespace GameOfLife.Traditional
+namespace GameOfLife.DoubleBuffer
 {
     public class GameOfLifeCell : MonoBehaviour
     {
