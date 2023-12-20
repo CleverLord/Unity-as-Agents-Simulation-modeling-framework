@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2048154674367318695}
   - component: {fileID: 6975317334032520731}
   m_Layer: 0
-  m_Name: GameOfLifeCellTraditional
+  m_Name: GameOfLifeCellSimple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

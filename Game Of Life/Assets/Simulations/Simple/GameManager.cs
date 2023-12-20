@@ -31,7 +31,7 @@ namespace GameOfLife.Simple
             grid = new GameOfLifeCell[gridSize.x, gridSize.y];
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)
-                grid[x, y] = SpawnCell(x, y, mapState[x, y]);
+                grid[x, y] = SpawnCell(x, y, gridMap[x, y]);
 
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)

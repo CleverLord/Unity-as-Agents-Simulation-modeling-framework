@@ -6,6 +6,10 @@ using UnityEngine;
 public class GridMapSOEditor : Editor
 {
     public static int spacing = 8;
+    public static int maxDisplaySize = 25;
+
+    private Vector2 scrollPosition;
+
     public override void OnInspectorGUI()
     {
         GridMap gridMap = (GridMap)target;
@@ -23,12 +27,16 @@ public class GridMapSOEditor : Editor
         EditorGUILayout.Space();
 
         GUILayout.Label("Grid Map");
-        for (int y = gridMap.dimensions.y - 1; y >= 0; y--)
+
+        // Begin a horizontal scroll view
+        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.ExpandHeight(true));
+
+        for (int y = Mathf.Min(gridMap.dimensions.y - 1, maxDisplaySize); y >= 0; y--)
         {
             EditorGUILayout.BeginHorizontal();
-            for (int x = 0; x < gridMap.dimensions.x; x++)
+            for (int x = 0; x < gridMap.dimensions.x && x < maxDisplaySize; x++)
             {
-                bool newVal = EditorGUILayout.Toggle(gridMap[x, y], GUILayout.Width(12+spacing), GUILayout.Height(13+spacing)); // yes, box is not a square
+                bool newVal = EditorGUILayout.Toggle(gridMap[x, y], GUILayout.Width(12 + spacing), GUILayout.Height(13 + spacing)); // yes, box is not a square
                 if (gridMap[x, y] != newVal)
                 {
                     gridMap[x, y] = newVal;
@@ -36,6 +44,9 @@ public class GridMapSOEditor : Editor
             }
             EditorGUILayout.EndHorizontal();
         }
+
+        // End the horizontal scroll view
+        EditorGUILayout.EndScrollView();
     }
 }
 #endif
