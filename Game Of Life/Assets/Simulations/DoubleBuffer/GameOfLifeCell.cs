@@ -29,7 +29,9 @@ namespace GameOfLife.DoubleBuffer
         }
 
         public void Update() {
-            isAliveBoolName = Time.frameCount % 2 == 0 ? "isAliveEvenFrame" : "isAliveOddFrame";
+            //isAliveBoolName = Time.frameCount % 2 == 0 ? "isAliveEvenFrame" : "isAliveOddFrame";
+            if(Time.frameCount<2)
+                return;
             UpdateLogic();
         }
 

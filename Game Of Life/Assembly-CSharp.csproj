@@ -47,6 +47,7 @@
   <ItemGroup>
      <Compile Include="Assets\Simulations\DoubleBuffer\GameSpawner.cs" />
      <Compile Include="Assets\Simulations\PureCpu\GameOfLife.cs" />
+     <Compile Include="Assets\Simulations\Commons\GridMap\GridMap.cs" />
      <Compile Include="Assets\Scripts\CommandLineDataExtractor.cs" />
      <Compile Include="Assets\Simulations\Commons\Defaults.cs" />
      <Compile Include="Assets\Scripts\DelegateTest.cs" />
@@ -54,6 +55,7 @@
      <Compile Include="Assets\Simulations\Traditional\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\Masterscript\GameSpawner.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+     <Compile Include="Assets\Simulations\Commons\GridMap\GridMapEditor.cs" />
      <Compile Include="Assets\Simulations\PureCpu\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\DoubleBuffer\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\Traditional\GameSpawner.cs" />
@@ -65,6 +67,7 @@
      <Folder Include="Assets\Simulations\Masterscript" />
      <Folder Include="Assets\Simulations\Commons" />
      <Folder Include="Assets\Simulations\DoubleBuffer" />
+     <Folder Include="Assets\Simulations\Commons\GridMap" />
      <Folder Include="Assets\TutorialInfo\Scripts" />
      <Folder Include="Assets\TutorialInfo\Icons" />
      <Folder Include="Assets\TutorialInfo" />

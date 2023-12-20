@@ -9,6 +9,7 @@ namespace GameOfLife.Commons
     {
         public Vector2Int gridSize = new Vector2Int(32, 18);
         public int iterationCount = 100;
+        public GridMap gridMap;
         public static Defaults Instance { get; private set; }
         public void Awake() {
             Instance = this;
