@@ -15,8 +15,13 @@ public class GridMapSOEditor : Editor
         GridMap gridMap = (GridMap)target;
 
         EditorGUI.BeginChangeCheck();
-
-        gridMap.dimensions = EditorGUILayout.Vector2IntField("Grid Dimensions", gridMap.dimensions);
+        
+        Vector2Int newDimensions = EditorGUILayout.Vector2IntField("Grid Dimensions", gridMap.dimensions);
+        if (newDimensions != gridMap.dimensions)
+        {
+            gridMap.dimensions = newDimensions;
+            EditorUtility.SetDirty(gridMap);
+        }
 
         if (EditorGUI.EndChangeCheck())
         {
@@ -40,6 +45,7 @@ public class GridMapSOEditor : Editor
                 if (gridMap[x, y] != newVal)
                 {
                     gridMap[x, y] = newVal;
+                    EditorUtility.SetDirty(gridMap);
                 }
             }
             EditorGUILayout.EndHorizontal();

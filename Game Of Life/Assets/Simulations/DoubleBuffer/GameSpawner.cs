@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using GameOfLife.Commons;
-using UnityEngine.Serialization;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace GameOfLife.DoubleBuffer
 {
@@ -8,13 +7,10 @@ namespace GameOfLife.DoubleBuffer
     {
         public GameObject cellPrefab;
         public GridMap gridMap;
-        public int iterationCount = 100;
+        public Vector2Int gridSize => gridMap.dimensions;
         
         [Header("Visuals")]
-        public float cellSize = 1f;
-        public float cellSpacing = 0f;
         public GameOfLifeCell[,] grid;
-        public Vector2Int gridSize => gridMap.dimensions;
         void Start() {
             if (gridMap == null)
             {  
@@ -23,45 +19,34 @@ namespace GameOfLife.DoubleBuffer
             }
             SpawnCells();
         }
-        public void Update() {
-            if (Time.frameCount == iterationCount)
-            {
-                Debug.LogWarningFormat("Reached iteration count: {0} in time: {1}", iterationCount, Time.time);
-                //Application.Quit();
-            }
-        }
         
         private void SpawnCells() {
             grid = new GameOfLifeCell[gridSize.x, gridSize.y];
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)
                 grid[x, y] = SpawnCell(x, y, gridMap[x, y]);
+            
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)
-                SetNeighbors(x, y);
+                ConnectNeighbours(grid[x, y], x, y);
         }
 
         GameOfLifeCell SpawnCell(int x, int y,bool isAlive) {
-            Vector3 position = new Vector3(x * (cellSize + cellSpacing), 0, y * (cellSize + cellSpacing));
+            Vector3 position = new Vector3(x, 0, y);
             GameObject cell = Instantiate(cellPrefab, position, Quaternion.identity, transform);
             GameOfLifeCell golcell= cell.GetComponent<GameOfLifeCell>();
             golcell.SetInitialState(isAlive);
             return golcell;
         }
 
-        void SetNeighbors(int x, int y) {
-            GameOfLifeCell cell = grid[x, y];
-            //go through all 8 neighbors
-            for (int i = -1; i <= 1; i++)
-                for (int j = -1; j <= 1; j++) {
-                    //skip self
-                    if (i == 0 && j == 0)
-                        continue;
-                    //skip out of bounds
-                    if (x + i < 0 || x + i >= gridSize.x || y + j < 0 || y + j >= gridSize.y)
-                        continue;
-                    cell.neighbors.Add(grid[x + i, y + j]);
-                }
+        void ConnectNeighbours(GameOfLifeCell golc, int x, int y) {
+            List<GameOfLifeCell> neighbours = new List<GameOfLifeCell>();
+            for (int x1 = x - 1; x1 <= x + 1; x1++)
+            for (int y1 = y - 1; y1 <= y + 1; y1++)
+                if (x1 >= 0 && x1 < gridSize.x && y1 >= 0 && y1 < gridSize.y && !(x1 == x && y1 == y))
+                    neighbours.Add(grid[x1, y1]);
+            golc.neighbours = neighbours;
         }
+        
     }
 }

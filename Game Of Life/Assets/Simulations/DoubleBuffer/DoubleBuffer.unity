@@ -209,8 +209,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.5735764, y: 0, z: 0, w: 0.8191521}
+  m_LocalPosition: {x: 7.25, y: 11.15, z: 1.38}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -459,9 +459,6 @@ MonoBehaviour:
   cellPrefab: {fileID: 945952653945397864, guid: ee81c3f512d11224bb4ce668e1f9303b,
     type: 3}
   gridMap: {fileID: 11400000, guid: 0389c383b0503774b9f26cae21f1fb1e, type: 2}
-  iterationCount: 1000
-  cellSize: 1
-  cellSpacing: 0
 --- !u!4 &1391653742
 Transform:
   m_ObjectHideFlags: 0

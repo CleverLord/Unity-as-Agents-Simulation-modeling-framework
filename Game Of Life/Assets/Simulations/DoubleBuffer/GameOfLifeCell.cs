@@ -4,15 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using GameOfLife.Commons;
+using UnityEngine.Serialization;
 
 namespace GameOfLife.DoubleBuffer
 {
     public class GameOfLifeCell : MonoBehaviour
     {
-        public List<GameOfLifeCell> neighbors = new List<GameOfLifeCell>();
+        [FormerlySerializedAs("neighbors")]
+        public List<GameOfLifeCell> neighbours = new List<GameOfLifeCell>();
         //Implement alive state as a double buffer
         public bool isAliveEvenFrame = false;
         public bool isAliveOddFrame = false;
+        public bool isOddFrameCurrent = true;
         public string isAliveBoolName;
         void Start() { }
 
@@ -29,7 +32,6 @@ namespace GameOfLife.DoubleBuffer
         }
 
         public void Update() {
-            //isAliveBoolName = Time.frameCount % 2 == 0 ? "isAliveEvenFrame" : "isAliveOddFrame";
             if(Time.frameCount<2)
                 return;
             UpdateLogic();
@@ -41,7 +43,7 @@ namespace GameOfLife.DoubleBuffer
             SetState(willBeAlive);
         }
 
-        public int GetAliveNeighborsCount() => neighbors.Count(neighbor => neighbor.isAlive);
+        public int GetAliveNeighborsCount() => neighbours.Count(neighbor => neighbor.isAlive);
 
         private void SetState(bool newState) {
             //This works since isAlive.get() returns the current state, but isAlive.set(val) is setting future state
