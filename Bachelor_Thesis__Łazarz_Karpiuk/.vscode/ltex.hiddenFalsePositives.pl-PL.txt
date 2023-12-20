@@ -1,2 +1,0 @@
-{"rule":"CUDZYSLOW_OTWIERAJACY","sentence":"^\\Q[id=JK]Nasza hipoteza badawcza brzmi: “Silniki graficzne stanowią kompetentną platformę do przeprowadzania symulacji wieloagentowych”.\\E$"}
-{"rule":"PL_UNPAIRED_BRACKETS","sentence":"^\\Q[id=JK]Nasza hipoteza badawcza brzmi: “Silniki graficzne stanowią kompetentną platformę do przeprowadzania symulacji wieloagentowych”.\\E$"}
