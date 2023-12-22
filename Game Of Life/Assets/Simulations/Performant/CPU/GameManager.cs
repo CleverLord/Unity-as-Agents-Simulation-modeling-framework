@@ -1,0 +1,25 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace GameOfLife.Performant
+{
+    //This class decides whether operations are parallelized or not
+    public class GameManager : MonoBehaviour
+    {
+        // Start is called before the first frame update
+        void Start() {
+            
+        }
+
+        // Update is called once per frame
+        void Update() {
+            
+        }
+    }
+
+    public class GameProcessor : MonoBehaviour
+    {
+        
+    }
+}

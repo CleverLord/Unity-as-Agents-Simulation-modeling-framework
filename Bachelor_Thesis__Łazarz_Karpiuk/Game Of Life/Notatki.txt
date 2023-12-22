@@ -1,0 +1,1 @@
+Dokończyć Performant CPU, GPU. Zrobić zeby CPU było w wersji zwykłej i równoległej. Wyekstraktować rdzeń. Nie stawiać wszystkich kart na performance, a tylko na to z wizualizacją i monobehaviourami.

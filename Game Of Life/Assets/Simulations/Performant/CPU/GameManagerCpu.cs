@@ -7,26 +7,36 @@ using UnityEngine.Serialization;
 
 namespace GameOfLife.Performant
 {
-    public class GameSpawner : MonoBehaviour
+    public enum UpdateLogicMethod
+    {
+        Linq,
+        NoLinq,
+    }
+    public class GameManagerCpu : MonoBehaviour
     {
         public GridMap gridMap;
         public Vector2Int gridSize => gridMap.dimensions;
         public GameObject cellPrefab;
-        public float cellSize = 1f;
-        public float cellSpacing = 0f;
-        public GameOfLifeCell[,] grid;
-        public List<GameOfLifeCell> gridList;
+        
+        private GameOfLifeCell[,] grid;
+        private List<GameOfLifeCell> gridList;
         public bool[,] mapState;
-        public int iterationCount = 100;
-
-        void Start() { SpawnCells(); }
-
+        public int iterationCount = 0;
+        
+        public UpdateLogicMethod updateLogicMethod = UpdateLogicMethod.Linq;
+        
+        void Start() {
+            SpawnCells();
+        }
+        
+        bool resultPrinted = false;
         public void Update() {
-            if (Time.frameCount == iterationCount)
+            if (Time.time>10 && !resultPrinted)
             {
                 Debug.LogWarningFormat("Reached iteration count: {0} in time: {1}", iterationCount, Time.time);
+                //This part is for docker container, since it cannot be closed by pressing the stop button
 #if !UNITY_EDITOR
-                    Application.Quit();
+                Application.Quit();
 #endif
             }
             UpdateLogic();
@@ -49,7 +59,7 @@ namespace GameOfLife.Performant
         }
 
         GameOfLifeCell SpawnCell(int x, int y, bool isAlive) {
-            Vector3 position = new Vector3(x * (cellSize + cellSpacing), 0, y * (cellSize + cellSpacing));
+            Vector3 position = new Vector3(x, 0, y);
             GameObject cell = Instantiate(cellPrefab, position, Quaternion.identity, transform);
             GameOfLifeCell golcell = cell.GetComponent<GameOfLifeCell>();
             golcell.SetInitialState(isAlive);
@@ -71,17 +81,30 @@ namespace GameOfLife.Performant
         private bool[,] newMapState;
         public void UpdateLogic() {
             newMapState = new bool[gridSize.x, gridSize.y];
-            Parallel.ForEach(gridList, UpdateLogicParallelOperation);
+            
+            if (updateLogicMethod == UpdateLogicMethod.Linq)
+                Parallel.ForEach(gridList, UpdateLogicParallelOperation);
+            else
+                Parallel.ForEach(gridList, UpdateLogicParallelOperation_NoLinq);
+            
             mapState = newMapState;
 
-            //Following code cannot be accelerated,since visuals must be updated on main thread
+            //Following code cannot be accelerated, since visuals must be updated on main thread
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)
                 grid[x, y].SetState(mapState[x, y]);
+            //We could remove it by replacing it with auto-update through Update() function on the cell itself
+            //But that would run on the single thread anyway, and what's more, it would run even if there was no change in the cell's state
+            
+            iterationCount++;
         }
         public void UpdateLogicParallelOperation(GameOfLifeCell golc) {
             newMapState[golc.positionInGrid.x, golc.positionInGrid.y] = GetNewStateForCell(golc);
         }
+        public void UpdateLogicParallelOperation_NoLinq(GameOfLifeCell golc) {
+            newMapState[golc.positionInGrid.x, golc.positionInGrid.y] = GetNewStateForCell_NoLinq(golc);
+        }
+
         //This function is the most simple and readable, but it's also the slowest
         public bool GetNewStateForCell(GameOfLifeCell golc) {
             List<bool> neighbours = golc.neighbours.Select(n => n.isAlive).ToList();
@@ -90,7 +113,7 @@ namespace GameOfLife.Performant
         }
         //This one on the other hand does not use System.Linq, and that makes it faster
         //foreach (C#) is simmilar in performaance to for, and they both are faster than List.ForEach
-        public bool GetNewStateForCell_V2(GameOfLifeCell golc) {
+        public bool GetNewStateForCell_NoLinq(GameOfLifeCell golc) {
             int aliveNeighbours = 0;
             foreach (GameOfLifeCell neighbour in golc.neighbours)
                 if (neighbour.isAlive)
