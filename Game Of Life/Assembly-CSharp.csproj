@@ -52,6 +52,7 @@
      <Compile Include="Assets\Scripts\CommandLineDataExtractor.cs" />
      <Compile Include="Assets\Scripts\DelegateTest.cs" />
      <Compile Include="Assets\Simulations\Simple\GameManager.cs" />
+     <Compile Include="Assets\Simulations\Performant\GPU\GameOfLifeGPU.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
      <Compile Include="Assets\Simulations\Performant\CPU\GameManager.cs" />
      <Compile Include="Assets\Simulations\Commons\GridMap\GridMapEditor.cs" />

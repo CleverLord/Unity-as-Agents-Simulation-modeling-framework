@@ -4,6 +4,9 @@ Shader "Custom/GameOfLife"
     {
         _MainTex ("Current State", 2D) = "white" {}
         _NewStateTex ("New State", 2D) = "white" {}
+        _Threshold ("Threshold", Range(0, 15)) = 0.5
+        _Dims ("Dimensions", Vector) = (1, 1, 1, 1)
+        _Offset ("Offset", Vector) = (0, 0, 0, 0)
     }
 
     SubShader
@@ -29,6 +32,9 @@ Shader "Custom/GameOfLife"
 
             sampler2D _MainTex;
             sampler2D _NewStateTex;
+            float _Threshold;
+            float4 _Dims;
+            float4 _Offset;
 
             v2f vert(appdata_t v)
             {
@@ -40,48 +46,47 @@ Shader "Custom/GameOfLife"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                float2 uv = i.uv;
-                float4 currentState = tex2D(_MainTex, uv);
-
-                float2 offsets[8];
-                offsets[0] = float2(-1, -1);
-                offsets[1] = float2(0, -1);
-                offsets[2] = float2(1, -1);
-                offsets[3] = float2(-1, 0);
-                offsets[4] = float2(1, 0);
-                offsets[5] = float2(-1, 1);
-                offsets[6] = float2(0, 1);
-                offsets[7] = float2(1, 1);
-
-
                 // Apply an offset equal to half of the pixel width
-                float2 pixelOffset = 0.5 / _ScreenParams.xy;
+                const float2 pixelDims = 1.0 / _Dims.xy;
+                const float2 pixelOffset = 0.5 / _Dims.xy;
+                const float2 currentCoordsUV = i.uv - pixelOffset;
 
+                float4 currentState = tex2D(_MainTex, currentCoordsUV);
                 // Calculate the sum of neighboring pixel values
                 float sum = 0.0;
-                for (int j = 0; j < 8; j++)
+                for (int x = -1; x <= 1; x++)
                 {
-                    float2 neighborUV = uv + (offsets[j] + pixelOffset) / _ScreenParams.xy;
-                    sum += tex2D(_MainTex, neighborUV).r;
-                }
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        if (x == 0 && y == 0)
+                            continue;
 
+                        float2 neighborUV = currentCoordsUV + float2(x * pixelDims.x, y * pixelDims.y);
+                        if (neighborUV.x < 0 || neighborUV.x > 1 || neighborUV.y < 0 || neighborUV.y > 1)
+                            continue;
+                        sum += tex2D(_MainTex, neighborUV).r;
+                    }
+                }
+                
                 // Apply Conway's Game of Life rules
                 float4 newState = currentState;
-                // return isAlive ? aliveNeighbours is 2 or 3 : aliveNeighbours is 3;
+                //return newState;
+                // return isAlive ? aliveNeighbours is 2 or 3 : aliveNeighbours is 3; // <- copied from C# code
                 // To avoid rounding errors, we use 0.5 as the threshold
                 // So, newState>0.5 means the cell is alive
-                // sum < 1.5 means the cell has less than 2 alive neighbors
-                // sum > 2.5 means the cell has 3 or more alive neighbors
+                // sum < 1.5 means the cell has less than 1 or 0 alive neighbors
+                // sum > 3.5 means the cell has 4 or more alive neighbors
                 if (currentState.r > 0.5)
                 {
                     // Cell is alive, we can color it black if it should die
-                    if (sum < 1.5 || sum > 3.5) // means sum is 0, 1, 4, 5, 6, 7, 8
+                    if (sum < 1.5 || sum > _Threshold) // means sum is not 2 or 3
                     {
                         newState = float4(0, 0, 0, 1); // Cell dies
                     }
                 }
                 else
                 {
+                    //newState = float4(1, 1, 1, 1); // Debug, check if this is the problem
                     // Cell is dead, we can color it white if it should become alive
                     if (sum > 2.5 && sum < 3.5) //means sum is 3
                     {
@@ -91,6 +96,8 @@ Shader "Custom/GameOfLife"
 
                 // Update _NewStateTex with the calculated new state
                 return newState;
+                //return new color based on coords for debugging. U is R, V is G
+                //return float4(sum/8, 0, 0, 1);
             }
             ENDCG
         }
