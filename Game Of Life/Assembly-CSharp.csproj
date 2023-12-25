@@ -54,12 +54,15 @@
      <Compile Include="Assets\Simulations\Simple\GameManager.cs" />
      <Compile Include="Assets\Simulations\Performant\GPU\GameOfLifeGPU.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+     <Compile Include="Assets\Simulations\Performant\CPU\CommandLine\CommandLineManager.cs" />
      <Compile Include="Assets\Simulations\Commons\GridMap\GridMapEditor.cs" />
      <Compile Include="Assets\Simulations\DoubleBuffer\GameOfLifeCell.cs" />
+     <Compile Include="Assets\Simulations\Performant\CPU\Serializer\Serializer.cs" />
      <Compile Include="Assets\Simulations\Performant\CPU\GameManagerCpu.cs" />
      <Compile Include="Assets\Scripts\Direction.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Settings" />
+     <Folder Include="Assets\Simulations\Performant\CPU\CommandLine" />
      <Folder Include="Assets\Simulations\Simple" />
      <Folder Include="Assets\Scenes" />
      <Folder Include="Assets\Simulations\Performant\CPU" />
@@ -73,6 +76,7 @@
      <Folder Include="Assets\TutorialInfo\Scripts" />
      <Folder Include="Assets\TutorialInfo\Icons" />
      <Folder Include="Assets\TutorialInfo" />
+     <Folder Include="Assets\Simulations\Performant\CPU\Serializer" />
      <Folder Include="Assets\Simulations" />
      <Folder Include="Assets\Scripts" />
      <Reference Include="UnityEngine">

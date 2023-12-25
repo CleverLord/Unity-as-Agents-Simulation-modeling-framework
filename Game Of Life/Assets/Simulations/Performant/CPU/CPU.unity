@@ -388,6 +388,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1391653742}
   - component: {fileID: 1391653743}
+  - component: {fileID: 1391653744}
   m_Layer: 0
   m_Name: Simulation
   m_TagString: Untagged
@@ -422,11 +423,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e58b125ba453d1947907f0ab64584af3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridMap: {fileID: 11400000, guid: e6e95f4f9949db44ebd4aa1c090b14c1, type: 2}
+  gridMap: {fileID: 11400000, guid: 33c6fd97c4e055b4eb24858e63f6cc43, type: 2}
   cellPrefab: {fileID: 3080482792163556964, guid: 8dc0879b6c1b0b846834996bb17c3b45,
     type: 3}
   iterationCount: 0
-  updateLogicMethod: 0
+  targetTime: 10
+  updateLogicMethod: 1
+--- !u!114 &1391653744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391653740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cbce40a6c57284498e08375f380456e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridMaps:
+  - {fileID: 11400000, guid: f5682fc28345dfe48b47ec55a4c33d0f, type: 2}
+  - {fileID: 11400000, guid: 33c6fd97c4e055b4eb24858e63f6cc43, type: 2}
+  - {fileID: 11400000, guid: 0cde3c0350ead7c4495bd5ac1aa0060e, type: 2}
+  - {fileID: 11400000, guid: 3ffbb0569b443fc4682f5201c5cc1624, type: 2}
+  - {fileID: 11400000, guid: ec61d70f4a8e6cd4182c1785c9e4e826, type: 2}
+  - {fileID: 11400000, guid: 48eb9d4882457df47b3c52591deaa160, type: 2}
+  - {fileID: 11400000, guid: e6e95f4f9949db44ebd4aa1c090b14c1, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -3,8 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using GameOfLife.Commons;
-using UnityEngine.Serialization;
 using Debug = UnityEngine.Debug;
 
 namespace GameOfLife.Performant
@@ -24,11 +22,17 @@ namespace GameOfLife.Performant
         private List<GameOfLifeCell> gridList = new List<GameOfLifeCell>();
         public bool[,] mapState;
         public int iterationCount = 0;
+        public float targetTime = 10;
         
         public UpdateLogicMethod updateLogicMethod = UpdateLogicMethod.Linq;
         private bool initializedCorrectly = false;
+
+        //This is this way, so that we can connect all the assets in the inspector
+        private CommandLineManager CommandLineManager;
         
         void Start() {
+            CommandLineManager = GetComponent<CommandLineManager>();
+            CommandLineManager.Process(ref gridMap, ref targetTime);
             Stopwatch sw = Stopwatch.StartNew();
             SpawnCells();
             sw.Stop();
@@ -40,11 +44,12 @@ namespace GameOfLife.Performant
         public void Update() {
             if (!initializedCorrectly)
                 return;
-            if (Time.time>10 && !resultPrinted)
+            if (Time.time>targetTime && !resultPrinted)
             {
                 Debug.LogWarningFormat("Reached iteration count: {0} in time: {1}", iterationCount, Time.time);
                 //This part is for docker container, since it cannot be closed by pressing the stop button
 #if !UNITY_EDITOR
+                Serializer.SerializeAll(gridList,true);
                 Application.Quit();
 #endif
             }
