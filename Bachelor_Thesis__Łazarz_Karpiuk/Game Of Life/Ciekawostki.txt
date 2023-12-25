@@ -3,4 +3,10 @@ Można je znaleźć w l33 w GameOfLifeCell.cs
             if(Time.frameCount<2)
                 return;
 
-Graphics.CopyTexture can only copy between same texture format groups (d3d11 base formats: src=0 dst=9)
+Graphics.CopyTexture can only copy between same texture format groups (d3d11 base formats: src=0 dst=9) - default
+
+Graphics.CopyTexture can only copy between same texture format groups (d3d11 base formats: src=0 dst=27) - wersja InputTextureAlpha z gimpa (chyba)
+
+Graphics.CopyTexture can only copy between same texture format groups (d3d11 base formats: src=76 dst=27) - wersja FromGrayScale, Compression Normal Quality; 76=DXT1
+
+Graphics.CopyTexture can only copy between same texture format groups (d3d11 base formats: src=70 dst=27) - Werjsa ITA, CNQ; 70=DXT1
