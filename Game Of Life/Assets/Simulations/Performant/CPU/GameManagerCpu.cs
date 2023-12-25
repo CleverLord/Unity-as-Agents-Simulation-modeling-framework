@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using GameOfLife.Commons;
 using UnityEngine.Serialization;
+using Debug = UnityEngine.Debug;
 
 namespace GameOfLife.Performant
 {
@@ -17,20 +19,27 @@ namespace GameOfLife.Performant
         public GridMap gridMap;
         public Vector2Int gridSize => gridMap.dimensions;
         public GameObject cellPrefab;
-        
+
         private GameOfLifeCell[,] grid;
-        private List<GameOfLifeCell> gridList;
+        private List<GameOfLifeCell> gridList = new List<GameOfLifeCell>();
         public bool[,] mapState;
         public int iterationCount = 0;
         
         public UpdateLogicMethod updateLogicMethod = UpdateLogicMethod.Linq;
+        private bool initializedCorrectly = false;
         
         void Start() {
+            Stopwatch sw = Stopwatch.StartNew();
             SpawnCells();
+            sw.Stop();
+            Debug.LogFormat("Spawned {0} cells in {1} ms", gridSize.x * gridSize.y, sw.ElapsedMilliseconds);
+            initializedCorrectly = true;
         }
         
         bool resultPrinted = false;
         public void Update() {
+            if (!initializedCorrectly)
+                return;
             if (Time.time>10 && !resultPrinted)
             {
                 Debug.LogWarningFormat("Reached iteration count: {0} in time: {1}", iterationCount, Time.time);
@@ -49,7 +58,7 @@ namespace GameOfLife.Performant
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)
             {
-                grid[x, y] = SpawnCell(x, y, mapState[x, y]);
+                grid[x, y] = SpawnCell(x, y, gridMap[x, y]);
                 gridList.Add(grid[x, y]);
             }
 
