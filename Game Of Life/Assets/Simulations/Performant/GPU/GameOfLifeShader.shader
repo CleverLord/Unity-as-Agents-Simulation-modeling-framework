@@ -3,10 +3,7 @@ Shader "Custom/GameOfLife"
     Properties
     {
         _MainTex ("Current State", 2D) = "white" {}
-        _NewStateTex ("New State", 2D) = "white" {}
-        _Threshold ("Threshold", Range(0, 15)) = 0.5
-        _Dims ("Dimensions", Vector) = (1, 1, 1, 1)
-        _Offset ("Offset", Vector) = (0, 0, 0, 0)
+        _Dims ("Dimensions", Vector) = (32, 32, 1, 1)
     }
 
     SubShader
@@ -31,10 +28,7 @@ Shader "Custom/GameOfLife"
             };
 
             sampler2D _MainTex;
-            sampler2D _NewStateTex;
-            float _Threshold;
             float4 _Dims;
-            float4 _Offset;
 
             v2f vert(appdata_t v)
             {
@@ -62,12 +56,11 @@ Shader "Custom/GameOfLife"
                             continue;
 
                         float2 neighborUV = currentCoordsUV + float2(x * pixelDims.x, y * pixelDims.y);
-                        if (neighborUV.x < 0 || neighborUV.x > 1 || neighborUV.y < 0 || neighborUV.y > 1)
-                            continue;
-                        sum += tex2D(_MainTex, neighborUV).r;
+                        if (neighborUV.x > 0 && neighborUV.x < 1 && neighborUV.y > 0 && neighborUV.y < 1)
+                            sum += tex2D(_MainTex, neighborUV).r;
                     }
                 }
-                
+
                 // Apply Conway's Game of Life rules
                 float4 newState = currentState;
                 //return newState;
@@ -79,14 +72,13 @@ Shader "Custom/GameOfLife"
                 if (currentState.r > 0.5)
                 {
                     // Cell is alive, we can color it black if it should die
-                    if (sum < 1.5 || sum > _Threshold) // means sum is not 2 or 3
+                    if (sum < 1.5 || sum > 2.5) // means sum is not 2 or 3
                     {
                         newState = float4(0, 0, 0, 1); // Cell dies
                     }
                 }
                 else
                 {
-                    //newState = float4(1, 1, 1, 1); // Debug, check if this is the problem
                     // Cell is dead, we can color it white if it should become alive
                     if (sum > 2.5 && sum < 3.5) //means sum is 3
                     {
@@ -96,8 +88,6 @@ Shader "Custom/GameOfLife"
 
                 // Update _NewStateTex with the calculated new state
                 return newState;
-                //return new color based on coords for debugging. U is R, V is G
-                //return float4(sum/8, 0, 0, 1);
             }
             ENDCG
         }

@@ -67,6 +67,7 @@
      <None Include="Assets\Simulations\Performant\GPU\GameOfLifeShader.shader" />
      <Folder Include="Assets\Simulations\Commons" />
      <Folder Include="Assets\Simulations\DoubleBuffer" />
+     <None Include="Assets\Simulations\Performant\GPU\GameOfLifeGPU_V2.shader" />
      <Folder Include="Assets\Simulations\Commons\GridMap" />
      <Folder Include="Assets\Simulations\Performant" />
      <Folder Include="Assets\Simulations\Performant\GPU" />
