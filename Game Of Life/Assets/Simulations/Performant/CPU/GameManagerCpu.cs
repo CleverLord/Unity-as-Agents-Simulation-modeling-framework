@@ -46,7 +46,7 @@ namespace GameOfLife.Performant
                 return;
             if (Time.time>targetTime && !resultPrinted)
             {
-                Debug.LogWarningFormat("Reached iteration count: {0} in time: {1}", iterationCount, Time.time);
+                Debug.LogWarningFormat("Reached iteration count: {0} in time: {1}. Total fps: {2}", iterationCount, targetTime, iterationCount/targetTime);
                 //This part is for docker container, since it cannot be closed by pressing the stop button
 #if !UNITY_EDITOR
                 Serializer.SerializeAll(gridList,true);

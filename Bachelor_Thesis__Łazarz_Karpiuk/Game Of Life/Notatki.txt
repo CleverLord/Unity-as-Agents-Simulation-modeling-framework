@@ -1,1 +1,4 @@
-Dokończyć Performant CPU, GPU. Zrobić zeby CPU było w wersji zwykłej i równoległej. Wyekstraktować rdzeń. Nie stawiać wszystkich kart na performance, a tylko na to z wizualizacją i monobehaviourami.
+Przygotować dockera.
+1. Wybrać scenę CPU
+2. Ustawić w dockerze map size 3
+3. Uruchomić

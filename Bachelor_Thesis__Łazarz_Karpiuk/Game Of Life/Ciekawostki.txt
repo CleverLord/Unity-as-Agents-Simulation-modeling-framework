@@ -10,3 +10,19 @@ Graphics.CopyTexture can only copy between same texture format groups (d3d11 bas
 Graphics.CopyTexture can only copy between same texture format groups (d3d11 base formats: src=76 dst=27) - wersja FromGrayScale, Compression Normal Quality; 76=DXT1
 
 Graphics.CopyTexture can only copy between same texture format groups (d3d11 base formats: src=70 dst=27) - Werjsa ITA, CNQ; 70=DXT1
+
+
+Json:
+{"cells":[{"instanceID":-82},{"instanceID":-98},{"instanceID":-114},{"instanceID":-130},{"instanceID":-146},{"instanceID":-162},{"instanceID":-178},{"instanceID":-194},{"instanceID":-210}]}
+	[Serializable]
+        public class CellsWrapper
+        {
+            public List<GameOfLifeCell> cells;
+        }
+ [System.Serializable]
+    public class GameOfLifeCell : MonoBehaviour
+    {
+        [SerializeField] public bool isAlive;
+        [NonSerialized] public List<GameOfLifeCell> neighbours;
+        [SerializeField] public Vector2Int positionInGrid;
+https://docs.unity3d.com/2020.1/Documentation/Manual/JSONSerialization.html # Supported types

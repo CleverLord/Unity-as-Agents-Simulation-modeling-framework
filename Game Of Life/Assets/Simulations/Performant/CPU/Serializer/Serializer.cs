@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -34,42 +35,47 @@ namespace GameOfLife.Performant
             SaveDictionaryLike(cells,printToTheConsole);
             SaveDictionaryLikeOnlyAlive(cells,printToTheConsole);
         }
-
+        
+        [Serializable]
+        public class CellsWrapper
+        {
+            public List<GameOfLifeSerializedCell> cells;
+        }
+        [Serializable]
+        public class GameOfLifeSerializedCell
+        {
+            public Vector2Int positionInGrid;
+            public bool isAlive;
+        }
+        
         public static void SaveJson(List<GameOfLifeCell> cells, bool printToTheConsole = false) {
-            string json = JsonUtility.ToJson(cells);
+            string json = JsonUtility.ToJson(new CellsWrapper(){cells = cells.ConvertAll(cell => new GameOfLifeSerializedCell(){positionInGrid = cell.positionInGrid, isAlive = cell.isAlive})});
             string filename = GetFileName("Json", "json");
             File.WriteAllText(Application.dataPath + "/" + filename, json);
             if (printToTheConsole)
-                Debug.Log(json);
+                Debug.Log("\nJson:\n" + json);
         }
 
         public static void SaveDictionaryLike(List<GameOfLifeCell> cells, bool printToTheConsole = false) {
             string filename = GetFileName("DictionaryLike", "txt");
             using (var writer = new StreamWriter(Application.dataPath + "/" + filename))
             {
-                //Save dimensions
-                writer.WriteLine("# Dimensions");
-                writer.WriteLine(cells[0].positionInGrid.x + "," + cells[0].positionInGrid.y);
                 //Save cells
-                writer.WriteLine("# x,y,isAlive");
+                writer.WriteLine("x,y,isAlive");
                 foreach (var cell in cells)
                 {
                     writer.WriteLine(cell.positionInGrid.x + "," + cell.positionInGrid.y + "," + cell.isAlive);
                 }
             }
             if (printToTheConsole)
-                Debug.Log(File.ReadAllText(Application.dataPath + "/" + filename));
+                Debug.Log("\nDictionaryLike:\n" + File.ReadAllText(Application.dataPath + "/" + filename));
         }
 
         public static void SaveDictionaryLikeOnlyAlive(List<GameOfLifeCell> cells, bool printToTheConsole = false) {
             string filename = GetFileName("DictionaryOnlyAlive", "csv");
             using (var writer = new StreamWriter(Application.dataPath + "/" + filename))
             {
-                //Save dimensions
-                writer.WriteLine("# Dimensions");
-                writer.WriteLine(cells[0].positionInGrid.x + "," + cells[0].positionInGrid.y);
-                //Save cells
-                writer.WriteLine("# x,y");
+                writer.WriteLine("x,y");
                 foreach (var cell in cells)
                 {
                     if (cell.isAlive)
@@ -77,7 +83,7 @@ namespace GameOfLife.Performant
                 }
             }
             if (printToTheConsole)
-                Debug.Log(File.ReadAllText(Application.dataPath + "/" + filename));
+                Debug.Log("\nDictionaryOnlyAlive:\n" + File.ReadAllText(Application.dataPath + "/" + filename) + "\n");
         }
         static string GetFileName(string prefix, string extension) {
             return prefix + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "." + extension;
