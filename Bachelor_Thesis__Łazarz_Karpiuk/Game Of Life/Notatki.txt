@@ -1,4 +1,5 @@
 Przygotować dockera.
-1. Wybrać scenę CPU
-2. Ustawić w dockerze map size 3
-3. Uruchomić
+1. Wybrać scenę CPU V
+2. Skopiować config dockera ze starego repo
+3. Ustawić w dockerze map size 3
+4. Uruchomić
