@@ -121,8 +121,7 @@ namespace GameOfLife.Performant
 
         //This function is the most simple and readable, but it's also the slowest
         public bool GetNewStateForCell(GameOfLifeCell golc) {
-            List<bool> neighbours = golc.neighbours.Select(n => n.isAlive).ToList();
-            int aliveNeighbours = neighbours.Count(n => n);
+            int aliveNeighbours = golc.neighbours.Select(n => n.isAlive).Count(n => n);
             return golc.isAlive ? aliveNeighbours is 2 or 3 : aliveNeighbours is 3;
         }
         //This one on the other hand does not use System.Linq, and that makes it faster

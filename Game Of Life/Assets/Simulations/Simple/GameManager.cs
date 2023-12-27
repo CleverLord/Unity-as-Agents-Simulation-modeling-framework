@@ -71,8 +71,7 @@ namespace GameOfLife.Simple
                 grid[x, y].SetState(mapState[x, y]);
         }
         public bool GetNewStateForCell(GameOfLifeCell golc) {
-            List<bool> neighbours = golc.neighbours.Select(n => n.isAlive).ToList();
-            int aliveNeighbours = neighbours.Count(n => n);
+            int aliveNeighbours = golc.neighbours.Select(n => n.isAlive).Count(n=>n);
             return golc.isAlive ? aliveNeighbours is 2 or 3 : aliveNeighbours is 3;
         }
     }
