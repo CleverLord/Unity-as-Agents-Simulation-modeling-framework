@@ -8,6 +8,7 @@ using UnityEngine.Serialization;
 
 namespace GameOfLife.DoubleBuffer
 {
+    [SelectionBase]
     public class GameOfLifeCell : MonoBehaviour
     {
         [FormerlySerializedAs("neighbors")]
@@ -15,24 +16,29 @@ namespace GameOfLife.DoubleBuffer
         //Implement alive state as a double buffer
         public bool isAliveEvenFrame = false;
         public bool isAliveOddFrame = false;
-        public bool isOddFrameCurrent = true;
-        public string isAliveBoolName;
+        public bool isEvenFrameCurrent = true; //Time.frameCount % 2 == 0
         void Start() { }
 
         public bool isAlive
         {
             //get refers to the current state, so it's comparing to the 0
-            get => Time.frameCount % 2 == 0 ? isAliveEvenFrame : isAliveOddFrame;
+            get => isEvenFrameCurrent ? isAliveEvenFrame : isAliveOddFrame;
             //set refers to the next state, so it's comparing to the 1
-            set => (Time.frameCount % 2 == 0 ? ref isAliveOddFrame : ref isAliveEvenFrame) = value;
+            set => (isEvenFrameCurrent ? ref isAliveOddFrame : ref isAliveEvenFrame) = value;
         }
         public bool isAliveNextFrame
         {
-            get => Time.frameCount % 2 == 0 ? isAliveOddFrame : isAliveEvenFrame;
+            get => isEvenFrameCurrent ? isAliveOddFrame : isAliveEvenFrame;
         }
 
         public void Update() {
-            if(Time.frameCount<2)
+            if (Time.frameCount < 2)
+                return;
+            isEvenFrameCurrent = !isEvenFrameCurrent;
+        }
+
+        public void LateUpdate() {
+            if (Time.frameCount < 2)
                 return;
             UpdateLogic();
         }
@@ -46,7 +52,7 @@ namespace GameOfLife.DoubleBuffer
         public int GetAliveNeighborsCount() => neighbours.Count(neighbor => neighbor.isAlive);
 
         private void SetState(bool newState) {
-            //This works since isAlive.get() returns the current state, but isAlive.set(val) is setting future state
+            // This works since isAlive.get() returns the current state, but isAlive.set(val) is setting future state
             isAlive = newState;
             if (newState != isAlive)
                 RunStateChangeCallbacks();
@@ -64,7 +70,17 @@ namespace GameOfLife.DoubleBuffer
             else
                 OnBecomeDead();
         }
-
+        
+        [ContextMenu("Revive Cell")]
+        public void ReviveCell() {
+            SetInitialState(true); // We use SetInitialState() instead of SetState() to force the state change callbacks to run
+            // Using SetState() would not run the callbacks, if the state was changed last frame
+        }
+        [ContextMenu("Kill Cell")]
+        public void KillCell() {
+            SetInitialState(false);
+        }
+        
         [Header("Visuals")]
         public MeshRenderer meshRenderer;
         public Material aliveMaterial;
@@ -72,12 +88,10 @@ namespace GameOfLife.DoubleBuffer
 
         protected void OnBecomeAlive() {
             meshRenderer.material = aliveMaterial;
-            //Debug.Log("Cell became alive");
         }
 
         protected void OnBecomeDead() {
             meshRenderer.material = deadMaterial;
-            //Debug.Log("Cell became dead");
         }
     }
 }

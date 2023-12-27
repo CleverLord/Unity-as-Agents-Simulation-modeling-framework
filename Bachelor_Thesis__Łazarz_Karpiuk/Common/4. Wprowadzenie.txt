@@ -1,1 +1,1 @@
-W ramach naszej pracy inżynierskiej wykonaliśmy 3 symulacje w Unity. Game Of Life... i coś tam jeszcze
+W ramach naszej pracy inżynierskiej wykonaliśmy 3 symulacje w Unity. Game Of Life, Ekosystem, oraz Ucieczkę z lochów

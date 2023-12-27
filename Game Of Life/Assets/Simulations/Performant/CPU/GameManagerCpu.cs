@@ -31,6 +31,11 @@ namespace GameOfLife.Performant
         private CommandLineManager CommandLineManager;
         
         void Start() {
+            if (gridMap == null)
+            {  
+                Debug.LogError("GridMap not found in GameManager. Disabling GameManager.");
+                this.gameObject.SetActive(false);
+            }
             CommandLineManager = GetComponent<CommandLineManager>();
             CommandLineManager.Process(ref gridMap, ref targetTime);
             Stopwatch sw = Stopwatch.StartNew();
