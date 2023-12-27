@@ -1,0 +1,8 @@
+docker run gameoflife_thesis
+docker build -t gameoflife_thesis .
+
+wsl
+cd Documents/GitHub/Unity-as-Agents-Simulation-modeling-framework/
+cd 'Game Of Life'/
+cd Builds/
+clear || ./GameOfLife_LinuxServerBuild.x86_64 --mapSize=3 --targetTime=2

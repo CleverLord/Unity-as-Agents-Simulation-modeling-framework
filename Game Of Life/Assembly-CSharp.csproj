@@ -59,7 +59,6 @@
      <Compile Include="Assets\Simulations\DoubleBuffer\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\Performant\CPU\Serializer\Serializer.cs" />
      <Compile Include="Assets\Simulations\Performant\CPU\GameManagerCpu.cs" />
-     <Compile Include="Assets\Scripts\Direction.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Settings" />
      <Folder Include="Assets\Simulations\Performant\CPU\CommandLine" />

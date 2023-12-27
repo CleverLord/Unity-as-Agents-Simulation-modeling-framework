@@ -49,7 +49,7 @@ namespace GameOfLife.Performant
         }
         
         public static void SaveJson(List<GameOfLifeCell> cells, bool printToTheConsole = false) {
-            string json = JsonUtility.ToJson(new CellsWrapper(){cells = cells.ConvertAll(cell => new GameOfLifeSerializedCell(){positionInGrid = cell.positionInGrid, isAlive = cell.isAlive})});
+            string json = JsonUtility.ToJson(new CellsWrapper(){cells = cells.ConvertAll(cell => new GameOfLifeSerializedCell(){positionInGrid = cell.positionInGrid, isAlive = cell.isAlive})}, true);
             string filename = GetFileName("Json", "json");
             File.WriteAllText(Application.dataPath + "/" + filename, json);
             if (printToTheConsole)
