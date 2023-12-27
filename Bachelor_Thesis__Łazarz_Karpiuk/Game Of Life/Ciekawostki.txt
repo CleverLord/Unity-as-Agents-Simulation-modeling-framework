@@ -26,3 +26,10 @@ Json:
         [NonSerialized] public List<GameOfLifeCell> neighbours;
         [SerializeField] public Vector2Int positionInGrid;
 https://docs.unity3d.com/2020.1/Documentation/Manual/JSONSerialization.html # Supported types
+
+
+Build 12 sekund.
+Clean build 25 sekund
+Drop all 3 sekundy
+Rebuild w momencie kiedy nie było żadnej zmiany - 3 sekundy
+Generalnie buildy były szybkie - do 15 sekund
