@@ -1,46 +1,13 @@
 Wprowadzenie - czyli co zostało zrobione.
 
+# O pierwszej klasie symulacji
 Pierwszy z naszych projektów to Game Of Life. Uznaliśmy że, mimo iż ta symulacja nie jest do końca agentowa, a bardziej podchodzi pod kategorię automatów komórkowych, jest ona dobrym wprowadzeniem w naszą pracę, ponieważ jest to bardzo popularny model i zakładamy że nasz czytelnik go zna, dzięki czemu możemy skupić się na samych technicznych aspektach, czyli na tym, czym ta praca powinna być.
 
+# O implementacjach Game Of Life
 W praktyce są 4 symulacje w tym rozdziale, a każda z nich pokazuje coś innego. 
 
-4.2.1 Simple Game Of Life
 Pierwsza z nich to najbardziej typowe Game Of Life, zaprogramowane tak jak każdy by się tego spodziewał. Tablica dwuwymiarowa z aktualnym stanem planszy, druga tablica obok ze stanem następnym, i do tego pętla wyznaczająca przyszły stan komórki. Została ona stworzona aby pokazać jak wygląda prosta przykładowa realizacja tego zagadnienia w Unity.
 
-Ta realizacja oparta jest o 3 klasy: GameManager, GameOfLifeCell, GridMap
-Zaczynając od najprostrzej, GridMap to klasa, która posiada w sobie dwie główne zmienne oraz zmienną pomocniczą. Odpowiadają one kolejno za przechowywanie wymiarów mapy, przechowywanie wartości początkowej konkretnego pola w mapie, możliwośc zapisu mapy do pliku. Zmienna pomocnicza jest tam dlatego, że tablica dwuwymiarowa nie jest domyślnie serializowana, więc standardowym zabiegiem jest konwersja jej do jej płaskiego odpowiednika. Poza zmiennymi, jest jeszcze parę funkcji, ale to są tylko funkcje pomocnicze do konwersji i aktualizacji obiektu*. Ta klasa jest w praktyce jedynie strukturą, natomiast jest zadeklarowana jako klasa, żeby nie mieć ograniczeń typowej struktury. Najważniejszą z zalet jest możliwość dziedziczenia po klasie ScriptableObject, co dalej pozwala na zapisanie jej instancji jako pliku `.asset`. 
-Następną klasą jest GameOfLifeCell. Jak nazwa wskazuje, reprezentuje ona pojedyńczą komórkę w naszej symulacji. Wie ona czy jest żywa, jaką ma pozycję i ma też referencje do sąsiadów. Dodatkowo ma wskazany jeden ze swoich komponentów, jako ten, który powinien się zmieniać w zależności od jej stanu, oraz posiada dwa materiały, które za jej wygląd odpowiadają. Wszystkie jej funkcje odpowiadają jedynie za aktualizację stanu podanego z zewnątrz. Warto zwrócić uwagę na to że klasa dziedziczy po MonoBehaviour, co sprawia, że jej instancja jest nie tylko czystymi danymi, ale funkcjonuje ona jako obiekt w świecie Unity. W kontekście naszej pracy, dziedziczenie po tej klasie klasyfikuje klasę jako agenta**.
+Następna symulacja jest nieco zmodyfikowana. Nazywamy ją wersją o podwójnym buforowaniu, ponieważ przy jej tworzeniu, zarządzanie pamięcią, a dokładniej poprawne przełączanie między dwiema flagami, było zasadniczą trudnością. Symulacja ta jest w pełni agentowa z punktu widzenia naszego narzędzia, ponieważ nie ma jednej, centralnie sterującej pętli, a zamiast tego jest skrypt ze zdefiniowaną funkcją przejścia, którego instancja jest na każdym agencie i samo Unity woła na nich funkcję aktualizującą ich stany.
 
-*Opisać custom edytor Unity
-**Opisać Monobehaviour**
-Bazowo instancje tej klasy mają obiekt opisujący ich transformację w przestrzeni oraz są śledzone przez Unity (co zapobiega ich zniknięciu w skutek działania Garbage Collectora). Dodatkowo, takie instancje mogą posiadać 
-Start Update LateUpdate OnTriggerEnter OnCollisionBegin
-
-Najważniejszą klasą jest GameManager. To klasa która zawiera w sobie zaprogramowane zachowanie symulacji.
-Kod rozpoczyna się od 5 zmiennych. 
-*Place code snippet here*
-- Pierwsza z nich jest referencją do definicji mapy. Jest w tym obiekcie zawarta informacja o wymiarach mapy i jej stanie początkowym*.
-- Następna zmienna jest typu Vector2Int, czyli strukturą posiadającą dwie zmienne: x oraz y, z czego obie są liczbami całkowitymi. Ta zmienna określa wielkość mapy. Jest ona tak na prawdę lambdą, zwracająca pewne konkretne pole ze zmiennej powyżej. Zostało to tak zrobione, aby uniknąć długich odwołań do zmiennych w kodzie i jednocześnie zapobiedz potencjalnemu konfliktowi, w sytuacji jakby któreś pole przypadkowo zostało zmienione.
-- Dalej jest tabela dwuwymiarowa z referencjami do obiektów komórek. 
-- Na końcu jest takzwany prefab. To referencja do obiektu silnika, pozwalająca na instancjonowanie kopii ręcznie złożonego w edytorze modelu.
-
-*Opisać Prefab
-*Opisać podpinanie w inspektorze Unity
-
-Następnie są dwie funkcje: Start oraz Update. 
-Start wykonuje się raz, w momencie uruchomienia symulacji. Wewnątrz jest tylko funkcja pojawiająca komórki na scenie. Woła ona dwie podfunkcje.
-Pierwsza z nich służy tylko do klonowania obiektów i inicjalizowania ich. Robi to poprzez 
-- wyznaczenie puktu docelowego komórki, 
-- wywołania funkcji Instantiate, która mówi Unity, że obiekt tworzony podlega pod ekosystem Unity. Jako parametry podajemy pozycję początkową, obrót początkowy, oraz referencję do swojego komponentu transform, dzięki czemu nowo utworzona komórka nie będzie elementem wrzuconym na scenę, a będzie podpięta jako dziecko pod obiekt Managera. 
-- Następnie z nowo utworzonego obiektu pobieramy referencje do komponentu z naszym skryptem komórki. Wiemy że ten skrypt tam jest, ponieważ wcześniej zrobiliśmy nowy obiekt w Edytorze, dodaliśmy do niego ten komponent, zapisaliśmy ten obiekt jako asset, czyli jako plik projektowy, podlegający pod kontrolę wersji oddzielnie od sceny, i na końcu do instancji naszego Managera podpięliśmy referencję do nowo utworzonego assetu. 
-- Mając referencję do naszego komponentu ustawiamy stan początkowy, zgodny z definicją mapy, i na końcu 
-- zwracamy refrencję, do funkcji nadrzędnej, która ją zapisze.
-
-Druga funkcja, w momencie kiedy wszystkie klony są już na scenie, wiąże odpowiednio ich referencje do siebie nawzajem.
-W każdej iteracji silnika sprawdzane jest czy w danej klatce spacja została wciśnięta (nie mylić z "jest naciśnięta"), a następnie jeżeli tak, uruchamiane są dwie pętle. W pierwszej wyznaczany jest nowy stan komórek, w drugiej stan ten jest aplikowany, tzn. przenoszony z wewnętrzej dwuwymiarowej tablicy flag na obiekty na scenie, dzięki czemu możemy zaobserwować wynik działania algorytmu.
-
-4.2.1 Double Buffer Game Of Life
-Następna symulacja jest nieco zmodyfikowana. Nazywamy ją wersją o podwójnym buforowaniu, ponieważ przy jej tworzeniu, zarządzanie pamięcią, a dokładniej poprawne przełączanie między dwiema flagami, było zasadniczą trudnością. Symulacja ta jest w pełni agentowa z punktu widzenia naszego narzędzia, ponieważ nie ma jednej, centralnie sterującej pętli, a zamiast tego jest skrypt ze zdefiniowaną funkcją przejścia, którego instancja jest na każdym agencie i samo Unity woła na nich funkcję aktualizującą ich stany. 
-
-4.2.1 GPU Game Of Life
-Ostatnia wersja jest bardziej zbliżona do pierwszej pod kątem zarządzania pamięcią, jednak kod jej jest mało podobny do poprzednich. Unity pozwala na przyspieszanie obliczeń z wykorzystaniem GPU, jednak żeby z tego skorzystać, trzeba korzystać tylko z prostych struktur danych, ponieważ wszystko przed wykonaniem obliczeń jest kopiowane do pamięci karty graficznej. Bardziej skompilikowane algorytmy korzystają z tzw. Buforów Obliczeniowych `ComputeBuffer`, natomiast przy tak prostych algorytmach jak Game Of Life, możemy pokusić się o teoretycznie jeszcze bardziej wydajny sposób przyspieszania obliczeń na GPU. Zamiast stosować shadery obliczeniowe, możemy zastosować zwykłe, których dodatkowym ograniczeniem jest redukcja w.w jednowymiarowych list z własnymi strukturami, na rzecz Tekstur, czyli macierzy 2D złożonej z krotki czterech floatów, domyślnie reprezentujących czerwony, zielony, niebieski, i przezroczystość, ale ostatecznie to tylko bajty, które możemy interpretować w dowolny sposób.
+Ostatnie dwie są skupione na wydajności. Dla przejrzystości rozdzieliliśmy kod pracujący na CPU od tego na GPU, szczególnie iż do wersji na procesorze dodaliśmy parę linijek rozszerzających kod o pewne funkcjonalności przydatne ogólnie przy modelowaniu agentowym.
