@@ -1,0 +1,17 @@
+# Akapit teoretyczny
+Scenariusze są ważnym elementem symulacji agentowych. Standardowo, po zaprogramowaniu symulacji możemy ją uruchomić i może nawet dostać jakieś sensowne wyniki, jeżeli oczywiście podamy do algorytmu rozsądne parametry wejściowe. Natomiast bardzo często się zdarza, że chcemy przetestować pewną przestrzeń rozwiązań, albo po prostu kilka unikalnych sytuacji. 
+
+W naszej pracy będziemy regularnie odwoływali się do przykładu stadionu. Sz. Pan Profesor i jednocześnie nasz promotor realizował zlecenia, na podstawie których przygotowaliśmy ten przykład.
+Załóżmy że pewne miasto postanowiło wybudować na swoim terenie stadion. Architekci przygotowali projekt konstrukcji, tak żeby z równań naprężeń wynikało że obiekt się nie zawali oraz żeby był on zgodny z normami. Zanim on jednak zostanie wybudowany jest jeszcze potrzeba upewnienia się, że zastosowany rozkład korytarzy pozwala na sprawną ewakuację budynku. Tu wkraczają symulacje agentowe. Stosując wachlarz narzędzi oraz opierając parametry na faktycznie zmierzonych wartościach w trakcie np. próbnych ewakuacji, jesteśmy wstanie z dobrą dokładnością przybliżyć czas ewakuacji.
+
+Nawiązując do przykładu stadionu, możliwość tworzenia scenariuszy pozwala nam na odgórne określenie które miejsca zajmują agenci, albo w którym miejscu stoją i innych ich parametrów. Do tego możemy określić środowisko, czyli wstawić model budynku, m.in. zaznaczyć które drzwi są zamknięte na klucz. 
+
+# W Unity
+Tworzenie scenariusza w Unity można podzielić na dwie główne części: tworzenie sceny i tworzenie Scriptable Object z właściwościami przebiegu symulacji.
+
+Tworzenie sceny to proces, w którym definiujemy środowisko symulacji. Wiele elementów symulacji dużo łatwiej jest ustawiać w edytorze, niż w kodzie. Przykładem może być właśnie środowisko, które możemy zdefiniować jako zbiór obiektów w przestrzeni. W edytorze możemy je łatwo przesuwać, obracać, zmieniać ich rozmiar, a nawet zmieniać ich właściwości, takie jak kolor czy materiał.
+Tworzenie Scriptable Object z właściwościami przebiegu symulacji to druga część procesu. Scriptable Objects to specjalny typ obiektów w Unity, które służą do przechowywania danych. W kontekście tworzenia scenariuszy, mogą one przechowywać informacje o nieobiektowych parametrach symulacji, takich jak prędkość agentów, czas trwania symulacji, czy częstotliwość zapisu stanu symulacji.
+
+Nasze Game Of Life ma zaimplementowaną drugą część w postaci klasy GridMap. Część pierwsza, ze względu na to że w świecie nie ma żadnych innych agentów niż równo ustawione komórki, nie jest potrzebna.
+
+
