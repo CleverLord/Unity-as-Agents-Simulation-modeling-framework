@@ -90,6 +90,12 @@ public class Animal : LivingEntity {
         }
     }
 
+    // Get consumed in whole
+    public void Consume()
+    {
+        Die(CauseOfDeath.Eaten);
+    }
+
     // Animals choose their next action after each movement step (1 tile),
     // or, when not moving (e.g interacting with food etc), at a fixed time interval
     protected virtual void ChooseNextAction () {
@@ -198,9 +204,27 @@ public class Animal : LivingEntity {
     void HandleInteractions () {
         if (currentAction == CreatureAction.Eating) {
             if (foodTarget && hunger > 0) {
-                float eatAmount = Mathf.Min (hunger, Time.deltaTime * 1 / eatDuration);
-                eatAmount = ((Plant) foodTarget).Consume (eatAmount);
-                hunger -= eatAmount;
+                
+                // Eat a rabbit
+                if (diet == Species.Rabbit)
+                {
+                    ((Animal) foodTarget).Die(CauseOfDeath.Eaten);
+                    hunger = 0;
+                }
+                else if (diet == Species.Fox)
+                {
+                    // At the moment foxes can not get eaten
+                    Debug.LogError("Not implemented Eating interaction for eating a Fox!");
+                }
+                else if (diet == Species.Plant)
+                {
+                    float eatAmount = Mathf.Min (hunger, Time.deltaTime * 1 / eatDuration);
+                    eatAmount = ((Plant) foodTarget).Consume(eatAmount);
+                    hunger -= eatAmount;
+                } else
+                {
+                    Debug.LogError("Not implemented Eating interaction!");
+                }
             }
         } else if (currentAction == CreatureAction.Drinking) {
             if (thirst > 0) {
