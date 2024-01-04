@@ -37,3 +37,7 @@ Generalnie buildy były szybkie - do 15 sekund
 Porzucenie this[x,y] na rzecz Map[,]
 
 Nie da się przekazywać zmiennych Visual Scripting przez kod, więc przekazaliśmy przez transform
+
+Spawn w VS sprawia że OnEnterState na obiekcie wykonuje się wcześniej, niż spawner
+
+Wait for next frame nie działa tak fajnie

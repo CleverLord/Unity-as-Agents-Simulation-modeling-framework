@@ -303,8 +303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"declarations":{"Kind":"Scene","collection":{"$content":[{"name":"InitialMapStateDict","value":{"$type":"Unity.VisualScripting.AotDictionary"},"typeHandle":{"Identification":"Unity.VisualScripting.AotDictionary,
-      Unity.VisualScripting.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","$version":"A"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
+    _json: '{"declarations":{"Kind":"Scene","collection":{"$content":[],"$version":"A"},"$version":"A"}}'
     _objectReferences: []
 --- !u!4 &405867638
 Transform:
@@ -569,10 +568,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameOfLifeCellVisualScripting
       objectReference: {fileID: 0}
+    - target: {fileID: 199007742691832185, guid: 7e469f2cba6114646a067ac30d1f1314,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3675178580888017240, guid: 7e469f2cba6114646a067ac30d1f1314,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.25
       objectReference: {fileID: 0}
     - target: {fileID: 3675178580888017240, guid: 7e469f2cba6114646a067ac30d1f1314,
         type: 3}
@@ -582,7 +586,7 @@ PrefabInstance:
     - target: {fileID: 3675178580888017240, guid: 7e469f2cba6114646a067ac30d1f1314,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 3675178580888017240, guid: 7e469f2cba6114646a067ac30d1f1314,
         type: 3}
@@ -622,58 +626,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 199007742691832185, guid: 7e469f2cba6114646a067ac30d1f1314,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1638324014}
-    - targetCorrespondingSourceObject: {fileID: 199007742691832185, guid: 7e469f2cba6114646a067ac30d1f1314,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1638324013}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e469f2cba6114646a067ac30d1f1314, type: 3}
---- !u!1 &1638324012 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 199007742691832185, guid: 7e469f2cba6114646a067ac30d1f1314,
-    type: 3}
-  m_PrefabInstance: {fileID: 1638324011}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1638324013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1638324012}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efe58df89b5b74a97a123b5ed2b70422, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _json: '{"nest":{"source":"Macro","macro":0,"embed":null}}'
-    _objectReferences:
-    - {fileID: 11400000, guid: c312443fd7fa5654194dac374f2c20ce, type: 2}
---- !u!114 &1638324014
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1638324012}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e741851cba3ad425c91ecf922cc6b379, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _json: '{"declarations":{"Kind":"Object","collection":{"$content":[{"name":"isAlive","value":{"$content":false,"$type":"System.Boolean"},"typeHandle":{"Identification":"System.Boolean,
-      mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089","$version":"A"},"$version":"A"},{"name":"WillBeAlive","value":{"$content":false,"$type":"System.Boolean"},"typeHandle":{"Identification":"System.Boolean,
-      mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089","$version":"A"},"$version":"A"},{"name":"Neighbours","value":{"$content":[],"$type":"System.Collections.Generic.List`1[[Unity.VisualScripting.StateMachine,
-      Unity.VisualScripting.State, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"},"typeHandle":{"Identification":"System.Collections.Generic.List`1[[Unity.VisualScripting.StateMachine,
-      Unity.VisualScripting.State, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
-      mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089","$version":"A"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
-    _objectReferences: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
