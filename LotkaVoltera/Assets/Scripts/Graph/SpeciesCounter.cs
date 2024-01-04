@@ -3,23 +3,27 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectCounter : MonoBehaviour
+public class SpeciesCounter : MonoBehaviour
 {
+    [Range((1/50f), 50f)]
+    // times a second data is read
+    public float samplingRate = 1/5f;
+
     // current spiecies count
-    public Dictionary<Species, int> speciesCount;
+    private Dictionary<Species, int> speciesCount;
 
     private void Start()
     {
-        StartCoroutine(CountOccurrencesRoutine());
+        StartCoroutine(SampleData());
     }
 
-    IEnumerator CountOccurrencesRoutine()
+    IEnumerator SampleData()
     {
         while (true)
         {
             CountSpiecies();
             LogSpieciesCount();
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1 / samplingRate);
         }
     }
 
