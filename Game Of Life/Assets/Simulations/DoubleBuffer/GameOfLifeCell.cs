@@ -32,15 +32,13 @@ namespace GameOfLife.DoubleBuffer
         }
 
         public void Update() {
-            if (Time.frameCount < 2)
-                return;
-            isEvenFrameCurrent = !isEvenFrameCurrent;
+            if(Input.GetKeyDown(KeyCode.Space))
+                isEvenFrameCurrent = !isEvenFrameCurrent;
         }
 
         public void LateUpdate() {
-            if (Time.frameCount < 2)
-                return;
-            UpdateLogic();
+            if(Input.GetKeyDown(KeyCode.Space))
+                UpdateLogic();
         }
 
         public void UpdateLogic() {

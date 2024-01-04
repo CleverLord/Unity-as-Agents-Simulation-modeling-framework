@@ -49,6 +49,8 @@
      <Compile Include="Assets\Simulations\DoubleBuffer\GameSpawner.cs" />
      <Compile Include="Assets\Simulations\Commons\GridMap\InitialMapState.cs" />
      <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_Quaternion.cs" />
+     <Compile Include="Assets\Simulations\SimpleAgent\GameOfLifeCell.cs" />
+     <Compile Include="Assets\Simulations\SimpleAgent\GameSpawner.cs" />
      <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_TextCore_Glyph.cs" />
      <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_TextCore_LowLevel_GlyphPairAdjustmentRecord.cs" />
      <Compile Include="Assets\Simulations\Simple\GameOfLifeCell.cs" />
@@ -87,6 +89,7 @@
      <Folder Include="Assets\Simulations\Commons" />
      <Folder Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers" />
      <Folder Include="Assets\Simulations\DoubleBuffer" />
+     <Folder Include="Assets\Simulations\SimpleAgent" />
      <None Include="Assets\Simulations\Performant\GPU\GameOfLifeGPU_V2.shader" />
      <Folder Include="Assets\Simulations\Commons\GridMap" />
      <Folder Include="Assets\Simulations\Performant" />

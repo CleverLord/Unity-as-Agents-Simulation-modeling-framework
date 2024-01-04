@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace GameOfLife.DoubleBuffer
+namespace GameOfLife.SimpleAgent
 {
     public class GameSpawner : MonoBehaviour
     {
@@ -36,7 +36,7 @@ namespace GameOfLife.DoubleBuffer
         GameOfLifeCell SpawnCell(int x, int y,bool isAlive) {
             Vector3 position = new Vector3(x, 0, y);
             GameObject cell = Instantiate(cellPrefab, position, Quaternion.identity, transform);
-            GameOfLifeCell golcell = cell.GetComponent<GameOfLifeCell>();
+            GameOfLifeCell golcell= cell.GetComponent<GameOfLifeCell>();
             golcell.SetInitialState(isAlive);
             return golcell;
         }
