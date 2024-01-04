@@ -38,7 +38,7 @@ public class Environment : MonoBehaviour {
     static System.Random prng;
     TerrainGenerator.TerrainData terrainData;
 
-    static Dictionary<Species, Map> speciesMaps;
+    public static Dictionary<Species, Map> speciesMaps;
 
     void Start () {
         prng = new System.Random ();
