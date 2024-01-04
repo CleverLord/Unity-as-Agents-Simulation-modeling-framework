@@ -1,20 +1,22 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace GameOfLife.DoubleBuffer
 {
     public class GameSpawner : MonoBehaviour
     {
         public GameObject cellPrefab;
-        public GridMap gridMap;
-        public Vector2Int gridSize => gridMap.dimensions;
+        [FormerlySerializedAs("gridMap")]
+        public InitialMapState initialMapState;
+        public Vector2Int gridSize => initialMapState.dimensions;
         
         [Header("Visuals")]
         public GameOfLifeCell[,] grid;
         void Start() {
-            if (gridMap == null)
+            if (initialMapState == null)
             {  
-                Debug.LogError("GridMap not found in GameManager. Disabling GameManager.");
+                Debug.LogError("InitialMapState not found in GameManager. Disabling GameManager.");
                 this.gameObject.SetActive(false);
             }
             SpawnCells();
@@ -24,7 +26,7 @@ namespace GameOfLife.DoubleBuffer
             grid = new GameOfLifeCell[gridSize.x, gridSize.y];
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)
-                grid[x, y] = SpawnCell(x, y, gridMap[x, y]);
+                grid[x, y] = SpawnCell(x, y, initialMapState.Map[x, y]);
             
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)

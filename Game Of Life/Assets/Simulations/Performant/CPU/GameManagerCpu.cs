@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Debug = UnityEngine.Debug;
 
 namespace GameOfLife.Performant
@@ -14,8 +15,9 @@ namespace GameOfLife.Performant
     }
     public class GameManagerCpu : MonoBehaviour
     {
-        public GridMap gridMap;
-        public Vector2Int gridSize => gridMap.dimensions;
+        [FormerlySerializedAs("gridMap")]
+        public InitialMapState initialMapState;
+        public Vector2Int gridSize => initialMapState.dimensions;
         public GameObject cellPrefab;
 
         private GameOfLifeCell[,] grid;
@@ -31,13 +33,13 @@ namespace GameOfLife.Performant
         private CommandLineManager CommandLineManager;
         
         void Start() {
-            if (gridMap == null)
+            if (initialMapState == null)
             {  
-                Debug.LogError("GridMap not found in GameManager. Disabling GameManager.");
+                Debug.LogError("InitialMapState not found in GameManager. Disabling GameManager.");
                 this.gameObject.SetActive(false);
             }
             CommandLineManager = GetComponent<CommandLineManager>();
-            CommandLineManager.Process(ref gridMap, ref targetTime);
+            CommandLineManager.Process(ref initialMapState, ref targetTime);
             Stopwatch sw = Stopwatch.StartNew();
             SpawnCells();
             sw.Stop();
@@ -68,7 +70,7 @@ namespace GameOfLife.Performant
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)
             {
-                grid[x, y] = SpawnCell(x, y, gridMap[x, y]);
+                grid[x, y] = SpawnCell(x, y, initialMapState.Map[x, y]);
                 gridList.Add(grid[x, y]);
             }
 

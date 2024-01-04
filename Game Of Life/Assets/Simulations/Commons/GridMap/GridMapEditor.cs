@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(GridMap))]
+[CustomEditor(typeof(InitialMapState))]
 public class GridMapSOEditor : Editor
 {
     public static int spacing = 8;
@@ -12,21 +12,21 @@ public class GridMapSOEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        GridMap gridMap = (GridMap)target;
+        InitialMapState initialMapState = (InitialMapState)target;
 
         EditorGUI.BeginChangeCheck();
         
-        Vector2Int newDimensions = EditorGUILayout.Vector2IntField("Grid Dimensions", gridMap.dimensions);
-        if (newDimensions != gridMap.dimensions)
+        Vector2Int newDimensions = EditorGUILayout.Vector2IntField("Grid Dimensions", initialMapState.dimensions);
+        if (newDimensions != initialMapState.dimensions)
         {
-            gridMap.dimensions = newDimensions;
-            EditorUtility.SetDirty(gridMap);
+            initialMapState.dimensions = newDimensions;
+            EditorUtility.SetDirty(initialMapState);
         }
 
         if (EditorGUI.EndChangeCheck())
         {
-            Undo.RecordObject(gridMap, "Grid Dimensions Change");
-            gridMap.OnValidate();
+            Undo.RecordObject(initialMapState, "Grid Dimensions Change");
+            initialMapState.OnValidate();
         }
 
         EditorGUILayout.Space();
@@ -36,16 +36,16 @@ public class GridMapSOEditor : Editor
         // Begin a horizontal scroll view
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.ExpandHeight(true));
 
-        for (int y = Mathf.Min(gridMap.dimensions.y - 1, maxDisplaySize); y >= 0; y--)
+        for (int y = Mathf.Min(initialMapState.dimensions.y - 1, maxDisplaySize); y >= 0; y--)
         {
             EditorGUILayout.BeginHorizontal();
-            for (int x = 0; x < gridMap.dimensions.x && x < maxDisplaySize; x++)
+            for (int x = 0; x < initialMapState.dimensions.x && x < maxDisplaySize; x++)
             {
-                bool newVal = EditorGUILayout.Toggle(gridMap[x, y], GUILayout.Width(12 + spacing), GUILayout.Height(13 + spacing)); // yes, box is not a square
-                if (gridMap[x, y] != newVal)
+                bool newVal = EditorGUILayout.Toggle(initialMapState.Map[x, y], GUILayout.Width(12 + spacing), GUILayout.Height(13 + spacing)); // yes, box is not a square
+                if (initialMapState.Map[x, y] != newVal)
                 {
-                    gridMap[x, y] = newVal;
-                    EditorUtility.SetDirty(gridMap);
+                    initialMapState.Map[x, y] = newVal;
+                    EditorUtility.SetDirty(initialMapState);
                 }
             }
             EditorGUILayout.EndHorizontal();

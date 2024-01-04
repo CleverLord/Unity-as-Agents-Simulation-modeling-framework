@@ -7,9 +7,10 @@ namespace GameOfLife.Simple
 {
     public class GameManager : MonoBehaviour
     {
+        [FormerlySerializedAs("gridMap")]
         [Header("Simulation data")]
-        public GridMap gridMap;
-        public Vector2Int gridSize => gridMap.dimensions;
+        public InitialMapState initialMapState;
+        public Vector2Int gridSize => initialMapState.dimensions;
         private GameOfLifeCell[,] grid;
         private bool[,] mapState;
         
@@ -31,7 +32,7 @@ namespace GameOfLife.Simple
             grid = new GameOfLifeCell[gridSize.x, gridSize.y];
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)
-                grid[x, y] = SpawnCell(x, y, gridMap[x, y]);
+                grid[x, y] = SpawnCell(x, y, initialMapState.Map[x, y]);
 
             for (int x = 0; x < gridSize.x; x++)
             for (int y = 0; y < gridSize.y; y++)

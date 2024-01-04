@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class CommandLineManager : MonoBehaviour
 {
-    public List<GridMap> gridMaps = new List<GridMap>();
+    public List<InitialMapState> gridMaps = new List<InitialMapState>();
 
-    public void Process(ref GridMap selectedMap, ref float targetTime) {
+    public void Process(ref InitialMapState selectedMapState, ref float targetTime) {
         //SetGridMap
         int mapSize= 0;
         if (GetMapSize(ref mapSize)) {
-            GridMap newSelectedMap = gridMaps.FirstOrDefault(map => map.dimensions.x == mapSize);
-            if (selectedMap == null) {
+            InitialMapState newSelectedMapState = gridMaps.FirstOrDefault(map => map.dimensions.x == mapSize);
+            if (selectedMapState == null) {
                 Debug.LogWarning("Map size " + mapSize + " not found in gridMaps. Using default map.");
             }
             else {
                 Debug.Log("Map size " + mapSize + " found in gridMaps. Using it.");
-                selectedMap = newSelectedMap;
+                selectedMapState = newSelectedMapState;
             }
         }
         else {

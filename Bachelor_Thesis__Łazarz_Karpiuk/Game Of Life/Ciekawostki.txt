@@ -33,3 +33,7 @@ Clean build 25 sekund
 Drop all 3 sekundy
 Rebuild w momencie kiedy nie było żadnej zmiany - 3 sekundy
 Generalnie buildy były szybkie - do 15 sekund
+
+Porzucenie this[x,y] na rzecz Map[,]
+
+Nie da się przekazywać zmiennych Visual Scripting przez kod, więc przekazaliśmy przez transform

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\TutorialInfo\Scripts\Editor\ReadmeEditor.cs" />
+     <Folder Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\Editor" />
      <Folder Include="Assets\TutorialInfo\Scripts\Editor" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.13f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

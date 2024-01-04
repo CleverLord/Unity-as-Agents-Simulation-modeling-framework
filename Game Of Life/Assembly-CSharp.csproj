@@ -47,15 +47,31 @@
   <ItemGroup>
      <Compile Include="Assets\Simulations\Performant\CPU\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\DoubleBuffer\GameSpawner.cs" />
-     <Compile Include="Assets\Simulations\Commons\GridMap\GridMap.cs" />
+     <Compile Include="Assets\Simulations\Commons\GridMap\InitialMapState.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_Quaternion.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_TextCore_Glyph.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_TextCore_LowLevel_GlyphPairAdjustmentRecord.cs" />
      <Compile Include="Assets\Simulations\Simple\GameOfLifeCell.cs" />
      <Compile Include="Assets\Scripts\CommandLineDataExtractor.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_Events_UnityEvent.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_Events_UnityEventBase.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_TextCore_Text_Character.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_TextCore_GlyphMetrics.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_TextCore_Text_TextStyle.cs" />
      <Compile Include="Assets\Scripts\DelegateTest.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_ParticleSystem_MinMaxCurve.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_TextCore_Text_UnicodeLineBreakingRules.cs" />
      <Compile Include="Assets\Simulations\Simple\GameManager.cs" />
      <Compile Include="Assets\Simulations\Performant\GPU\GameOfLifeGPU.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_TextCore_Text_FontWeightPair.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_Rendering_Universal_StencilStateData.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_TextCore_Text_SpriteCharacter.cs" />
      <Compile Include="Assets\Simulations\Performant\CPU\CommandLine\CommandLineManager.cs" />
      <Compile Include="Assets\Simulations\Commons\GridMap\GridMapEditor.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_ParticleSystem_MinMaxGradient.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_TextCore_GlyphRect.cs" />
+     <Compile Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers\PropertyProvider_UnityEngine_TextCore_Text_SpriteGlyph.cs" />
      <Compile Include="Assets\Simulations\DoubleBuffer\GameOfLifeCell.cs" />
      <Compile Include="Assets\Simulations\Performant\CPU\Serializer\Serializer.cs" />
      <Compile Include="Assets\Simulations\Performant\CPU\GameManagerCpu.cs" />
@@ -64,9 +80,12 @@
      <Folder Include="Assets\Simulations\Performant\CPU\CommandLine" />
      <Folder Include="Assets\Simulations\Simple" />
      <Folder Include="Assets\Scenes" />
+     <Folder Include="Assets\Simulations\VisualScripting" />
      <Folder Include="Assets\Simulations\Performant\CPU" />
+     <Folder Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core" />
      <None Include="Assets\Simulations\Performant\GPU\GameOfLifeShader.shader" />
      <Folder Include="Assets\Simulations\Commons" />
+     <Folder Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Core\Property Providers" />
      <Folder Include="Assets\Simulations\DoubleBuffer" />
      <None Include="Assets\Simulations\Performant\GPU\GameOfLifeGPU_V2.shader" />
      <Folder Include="Assets\Simulations\Commons\GridMap" />
@@ -76,8 +95,10 @@
      <Folder Include="Assets\TutorialInfo\Icons" />
      <Folder Include="Assets\TutorialInfo" />
      <Folder Include="Assets\Simulations\Performant\CPU\Serializer" />
+     <Folder Include="Assets\Unity.VisualScripting.Generated\VisualScripting.Flow" />
      <Folder Include="Assets\Simulations" />
      <Folder Include="Assets\Scripts" />
+     <Folder Include="Assets\Unity.VisualScripting.Generated" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.13f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
