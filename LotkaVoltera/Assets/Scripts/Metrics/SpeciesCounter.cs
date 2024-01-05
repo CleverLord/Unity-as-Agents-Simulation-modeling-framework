@@ -14,8 +14,20 @@ public class SpeciesCounter : MonoBehaviour
     private Dictionary<Species, int> lastSpeciesCount = new Dictionary<Species, int>();
     private List<Dictionary<Species, int>> speciesCountAgregator = new List<Dictionary<Species, int>>();
 
+    // select species that will be counted
+    [ReadOnlyWhenPlaying]
+    public Species[] countedSpecies;
+    // all the non tracked species
+    private Species[] nonCountedSpecies;
+
     private void Start()
     {
+        // Calculate whitch species are non tracked
+        // Convert the enum to an array
+        Species[] allSpecies = Enum.GetValues(typeof(Species)).Cast<Species>().ToArray();
+        // Get the differences between two arrays
+        nonCountedSpecies = allSpecies.Except(countedSpecies).ToArray();
+
         StartCoroutine(SampleData());
     }
 
@@ -37,6 +49,12 @@ public class SpeciesCounter : MonoBehaviour
             return; 
         lastSpeciesCount = Environment.speciesMaps
             .ToDictionary(entry => entry.Key, entry => entry.Value.numEntities);
+        // ignore non tracked species
+        foreach (var key in nonCountedSpecies)
+        {
+            lastSpeciesCount.Remove(key);
+        }
+        // keep last species count in agregator buffor
         speciesCountAgregator.Add(lastSpeciesCount);
     }
 
