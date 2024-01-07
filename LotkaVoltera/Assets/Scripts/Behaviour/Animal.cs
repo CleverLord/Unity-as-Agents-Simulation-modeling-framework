@@ -114,7 +114,6 @@ public class Animal : LivingEntity {
         }
 
         Act ();
-
     }
 
     protected virtual void FindFood () {

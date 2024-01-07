@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class LivingEntity : MonoBehaviour {
 
@@ -6,14 +7,21 @@ public class LivingEntity : MonoBehaviour {
     public Species species;
     public Material material;
 
+    // Environment reproductive method reference for spawning offspring 
+    public Action<LivingEntity> reproduce;
+    [Range(1, 10)]
+    public float offspringSpawnRadious = 1.5f;
+    
     public Coord coord;
-    //
+    
     [HideInInspector]
     public int mapIndex;
     [HideInInspector]
     public Coord mapCoord;
 
     protected bool dead;
+
+    public virtual LivingEntity GetOffspring() { return null; }
 
     public virtual void Init (Coord coord) {
         this.coord = coord;
@@ -37,4 +45,5 @@ public class LivingEntity : MonoBehaviour {
             Destroy (gameObject);
         }
     }
+
 }
