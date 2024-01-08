@@ -10,6 +10,7 @@ namespace TerrainGeneration
         public GameObject terrMesh;
         public GameObject viewPort;
 
+
         [ReadOnlyWhenPlaying, Range(-100, 100)]
         public float OffsetX = 0;
         [ReadOnlyWhenPlaying, Range(-100, 100)]

@@ -10,7 +10,11 @@ namespace TerrainGeneration
 
     public class LineChart : MonoBehaviour
     {
-        public string ChartName = "Placeholder Line Chart name"; 
+        public TextMesh title;
+        public TextMesh xAxisLabel;
+        public TextMesh yAxisLabel;
+        public TextMesh xAxisScaleTooltip;
+        public TextMesh yAxisScaleTooltip;
 
         [ReadOnly]
         public float width;
@@ -20,7 +24,9 @@ namespace TerrainGeneration
         public ChartToWorldScaler chartToWorldScaler;
         [Tooltip("Object for setting chart size")]
         public GameObject viewPort;
-        public GameObject background;
+        public GameObject viewPortBackground;
+
+
         [ReadOnlyWhenPlaying]
         public bool showBackground = true;
         public SpeciesCounter dataSource;
@@ -65,9 +71,9 @@ namespace TerrainGeneration
             width = viewPort.transform.localScale.x;
             height = viewPort.transform.localScale.y;
             // make background cover viewport
-            background.transform.localScale = (Vector3) viewPort.transform.localScale;
+            viewPortBackground.transform.localScale = viewPort.transform.localScale;
             // enable the background object
-            background.SetActive(showBackground);
+            viewPortBackground.SetActive(showBackground);
             // Disable the viewport object
             viewPort.SetActive(false);
 
@@ -76,6 +82,9 @@ namespace TerrainGeneration
 
             // get names for data lines
             dataLines = dataSource.getDataNames();
+
+            // setup correct positions and scales for texts displayed on chart
+            InitTexts();
         }
 
         // Update is called once per frame
@@ -85,6 +94,9 @@ namespace TerrainGeneration
 
             // Add new data points to chart data
             UpdateDataPoints();
+
+            // Update axis data text every frame
+            UpdateAxisDataText();
 
             // redraw chart every frame
             if (Time.time > nextRedrawTime)
@@ -103,6 +115,38 @@ namespace TerrainGeneration
                 lineRenderers[idx].transform.localPosition = viewPort.gameObject.transform.localPosition;
                 lineRenderers[idx].positionCount = 0;
             }
+        }
+
+        // set correct locations for text displayed on the chart
+        private void InitTexts()
+        {
+            // Position TextMesh objects for title and labels
+            title.gameObject.transform.position = transform.position + new Vector3(width / 2, height, 0);
+            xAxisLabel.gameObject.transform.position = transform.position + new Vector3(width / 2, 0, 0);
+            yAxisLabel.gameObject.transform.position = transform.position + new Vector3(0, height / 2, 0);
+
+            // Position axis scale texts
+            xAxisScaleTooltip.transform.position = transform.position + new Vector3(width, 0, 0);
+            yAxisScaleTooltip.transform.position = transform.position + new Vector3(0, height, 0);
+        }
+
+        // method to initialize axis data text
+        private void InitAxisDataTexts()
+        {
+            
+        }
+
+        // method to update axis data text
+        private void UpdateAxisDataText()
+        {
+            // if chart has no datapoints
+            if (dataPoints.Length == 0)
+                return;
+            // Update X-axis data text based on the current width    
+            xAxisScaleTooltip.text = $"{(int) dataPoints[0].Count:F2}";
+
+            // Update Y-axis data text based on the current maxVisibleValue
+            yAxisScaleTooltip.text = $"{maxVisibleValue:F2}";
         }
 
         // register new data points to apropriate indexes
