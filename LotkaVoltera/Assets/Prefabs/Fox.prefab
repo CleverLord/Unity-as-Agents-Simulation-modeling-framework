@@ -134,6 +134,7 @@ MonoBehaviour:
   colourMaterialIndex: 0
   species: 8
   material: {fileID: 2100000, guid: 4f1aac096a6de4fa19b20fbb6e6c6e33, type: 2}
+  offspringSpawnRadious: 1.5
   coord:
     x: 0
     y: 0
