@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[SelectionBase]
 public class Animal : LivingEntity {
 
     public const int maxViewDistance = 10;
