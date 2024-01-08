@@ -17,6 +17,7 @@ public class SpeciesCounter : MonoBehaviour
     // select species that will be counted
     [ReadOnlyWhenPlaying]
     public Species[] countedSpecies;
+    [ReadOnlyWhenPlaying]
     // all the non tracked species
     private Species[] nonCountedSpecies;
 
@@ -29,6 +30,14 @@ public class SpeciesCounter : MonoBehaviour
         nonCountedSpecies = allSpecies.Except(countedSpecies).ToArray();
 
         StartCoroutine(SampleData());
+    }
+
+    public string[] getDataNames()
+    {
+        // get the names only of the species beeing counted
+        return Enum.GetNames(typeof(Species))
+            .Where(name => countedSpecies.Contains((Species)Enum.Parse(typeof(Species), name)))
+            .ToArray();
     }
 
     IEnumerator SampleData()
