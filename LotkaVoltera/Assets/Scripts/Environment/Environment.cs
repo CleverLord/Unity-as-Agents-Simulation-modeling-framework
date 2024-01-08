@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TerrainGeneration;
 using UnityEngine;
 
@@ -23,6 +25,8 @@ public class Environment : MonoBehaviour {
     public float mapViewDst;
 
     // Cached data:
+    static List<Coord> spawnableCoords; // coordinates of all the unocupied map regions
+
     public static Vector3[, ] tileCentres;
     public static bool[, ] walkable;
     static int size;
@@ -43,9 +47,8 @@ public class Environment : MonoBehaviour {
     void Start () {
         prng = new System.Random ();
 
-        Init ();
-        SpawnInitialPopulations ();
-
+        Init (); // Trees are spawned here
+        SpawnInitialPopulations (); // Species are spawned here
     }
 
     void OnDrawGizmos () {
@@ -59,12 +62,57 @@ public class Environment : MonoBehaviour {
         */
     }
 
+    public Coord? ChooseReproductionSpace (Coord coord, float reproductionRadious)
+    {
+        // get pseudo random number generator
+        var spawnPrng = new System.Random(seed);
+
+        // GetUnoccupiedNeighbours
+        List<Coord> spawnCoords = spawnableCoords.Where(c => Coord.Distance(c, coord) <= reproductionRadious).ToList();
+
+        // entity neighbourhood fully occupied
+        if (spawnCoords.Count() == 0)
+            return null;
+
+        // get random possible pawn coordinates and return them
+        int offspringCoordIndex = spawnPrng.Next(0, spawnCoords.Count());
+        return spawnCoords[offspringCoordIndex];
+    }
+
+    // Register new entity spawn by preventing another entity spawn at the same coordinates
+    public static void RegisterSpawn(LivingEntity entity, Coord spawnCoord)
+    {
+        // spawnable coords not yet initialized
+        if (spawnableCoords == null)
+            return;
+
+        // Remove new spawn coordinates from spawnable list
+        // if spawn possible
+        if (spawnableCoords.Any(c => c == spawnCoord))
+        {
+            // Add new entity
+            speciesMaps[entity.species].Add(entity, spawnCoord);
+            // remove coordinates from avaliable to spawn new entities
+            spawnableCoords.Remove(spawnCoord);
+        } else
+        {
+            Debug.LogError($"Spawn was not possible for entity of species: {entity.species.ToString()} at coorinates: {spawnCoord.ToString()}");
+        }
+    }
+
     public static void RegisterMove (LivingEntity entity, Coord from, Coord to) {
+        // Move entity
         speciesMaps[entity.species].Move (entity, from, to);
+        // Remove new coordinates from spawnable and add old ones
+        spawnableCoords.Remove(to);
+        spawnableCoords.Add(from);
     }
 
     public static void RegisterDeath (LivingEntity entity) {
+        // Remove entity
         speciesMaps[entity.species].Remove (entity, entity.coord);
+        // Add freed coordinates to spawnable
+        spawnableCoords.Add(entity.coord);
     }
 
     public static Coord SenseWater (Coord coord) {
@@ -115,6 +163,7 @@ public class Environment : MonoBehaviour {
                 if (visibleAnimal.currentAction == CreatureAction.SearchingForMate) {
                     potentialMates.Add (visibleAnimal);
                 }
+
             }
         }
 
@@ -359,12 +408,40 @@ public class Environment : MonoBehaviour {
                 spawnCoords.RemoveAt (spawnCoordIndex);
 
                 var entity = Instantiate (pop.prefab);
+                var entityScript = entity.GetComponent<LivingEntity>();
+                // register callback to method
+                entityScript.reproduce += SpawnOffspring;
                 entity.Init (coord);
 
-                speciesMaps[entity.species].Add (entity, coord);
+                speciesMaps[entity.species].Add(entity, coord);
             }
         }
+        // set spawnable map regions coords
+        spawnableCoords = spawnCoords;
     }
+
+    // spawn new plants descendant from current ones
+    public void SpawnOffspring(LivingEntity entity)
+    {
+        Debug.Log($"Trying to spawn new offspring for living entity of species: {entity.species}");
+        // Get new offspring spawn position
+        Coord? coord = ChooseReproductionSpace(entity.coord, entity.offspringSpawnRadious);
+
+        // if there are no spawnable map regions left
+        if (!coord.HasValue) {
+            Debug.LogWarning($"No space to spawn new entites!");
+            return;
+        }
+
+        // create new entity offspring
+        var offspring = entity.GetOffspring();
+        // initialize offspring coordinates/position
+        offspring.Init(coord.Value);
+        // register spawning new offspring
+        RegisterSpawn(offspring, coord.Value);
+        Debug.Log($"Spawned new offspring for living entity of species: {entity.species}");
+    }
+
 
     void LogPredatorPreyRelationships () {
         int numSpecies = System.Enum.GetNames (typeof (Species)).Length;
@@ -398,5 +475,4 @@ public class Environment : MonoBehaviour {
         public LivingEntity prefab;
         public int count;
     }
-
 }
