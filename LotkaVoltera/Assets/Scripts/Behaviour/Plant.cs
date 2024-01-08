@@ -5,8 +5,8 @@ using UnityEngine;
 
 [SelectionBase]
 public class Plant : LivingEntity {
-    // TODO: add functionality after merging task-16 into Lotka-Volterra
-    //[ReadOnly]
+
+    [ReadOnly]
     public float amountRemaining = 1;
     const float consumeSpeed = 8;
     [Range(1, 100)]
