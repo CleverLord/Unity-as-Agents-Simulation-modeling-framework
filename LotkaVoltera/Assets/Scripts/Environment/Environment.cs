@@ -151,6 +151,48 @@ public class Environment : MonoBehaviour {
         return null;
     }
 
+    public static List<Animal> SensePredators(Coord coord, Animal self)
+    {
+        List<Animal> predators = new List<Animal>();
+
+        // Get predators based on the species of the current animal
+        List<Species> predatorSpecies = predatorsBySpecies[self.species];
+
+        // Iterate through the predator species and get entities of those species
+        for (int i = 0; i < predatorSpecies.Count; i++)
+        {
+            Map predatorSpeciesMap = speciesMaps[predatorSpecies[i]];
+
+            // Add all visible predators of the given species within the max view distance
+            predators.AddRange(predatorSpeciesMap.GetEntities(coord, Animal.maxViewDistance)
+                .OfType<Animal>()
+                .Where(predator => predator != self && EnvironmentUtility.TileIsVisibile(coord.x, coord.y, predator.coord.x, predator.coord.y)));
+        }
+
+        return predators;
+    }
+
+    public static List<Animal> SenceFleeingKin(Coord coord, Animal self)
+    {
+        Map speciesMap = speciesMaps[self.species];
+        List<LivingEntity> visibleEntities = speciesMap.GetEntities(
+            coord,
+            Animal.maxViewDistance
+        );
+        var fleeingKin = new List<Animal>();
+
+        for (int i = 0; i < visibleEntities.Count; i++)
+        {
+            var visibleAnimal = (Animal) visibleEntities[i];
+            if (visibleAnimal.currentAction == CreatureAction.Distressed)
+            {
+                fleeingKin.Add(visibleAnimal);
+            }
+        }
+
+        return fleeingKin;
+    }
+
     // Return list of animals of the same species, with the opposite gender, who are also searching for a mate
     public static List<Animal> SensePotentialMates (Coord coord, Animal self) {
         Map speciesMap = speciesMaps[self.species];
@@ -170,11 +212,46 @@ public class Environment : MonoBehaviour {
         return potentialMates;
     }
 
+    // choose safest neighbouring tile to the animal current position
+    // if multiple safest choose last calculated
+    public static Coord SenseSafestNeighbour (Coord coord, Animal self)
+    {
+        List<Animal> dangers = self.GetVisibleDangers();
+        Coord safestNeighbour = coord;
+        float highestSafetyScore = float.MinValue;
+
+        foreach (Coord neighbourCoord in walkableNeighboursMap[coord.x, coord.y])
+        {
+            // Calculate safety score for the current neighbor
+            float safetyScore = float.MinValue;
+            // Calculate squared distances to visible predators
+            foreach (Animal danger in dangers)
+            {
+                float dangerMultiplyer = 1f;
+                if (danger.species == self.species)
+                    dangerMultiplyer += self.distressToDangerPreference;
+
+                float sqrDst = dangerMultiplyer * Coord.SqrDistance(neighbourCoord, danger.coord);
+                safetyScore += sqrDst;
+            }
+            // Update safest neighbor if the current neighbor has a higher safety score
+            if (safetyScore >= highestSafetyScore)
+            {
+                highestSafetyScore = safetyScore;
+                safestNeighbour = neighbourCoord;
+            }
+        }
+        return safestNeighbour;
+    }
+
+
     public static Surroundings Sense (Coord coord) {
         var closestPlant = speciesMaps[Species.Plant].ClosestEntity (coord, Animal.maxViewDistance);
         var surroundings = new Surroundings ();
         surroundings.nearestFoodSource = closestPlant;
         surroundings.nearestWaterTile = closestVisibleWaterMap[coord.x, coord.y];
+
+        // TODO: calculate here the closest safest tile
 
         return surroundings;
     }

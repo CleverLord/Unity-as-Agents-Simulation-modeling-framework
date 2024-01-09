@@ -7,5 +7,7 @@
     Eating,
     Drinking,
     SearchingForMate,
-    Reproducing
+    Reproducing,
+    FleeingFromDanger,
+    Distressed
 }

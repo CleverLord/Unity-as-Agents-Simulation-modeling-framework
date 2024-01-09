@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [SelectionBase]
@@ -21,13 +22,19 @@ public class Animal : LivingEntity {
     float timeToDeathByHunger = 200;
     float timeToDeathByThirst = 200;
 
+    [Tooltip("How simmilar in danger are distressed kin and predator to the animal"), Range(0f, 1f)]
+    public float distressToDangerPreference = 0.5f;
+
     float drinkDuration = 6;
     float eatDuration = 10;
 
+    [Range(0.1f,1f)]
     float criticalPercent = 0.7f;
+    [Range(1, 100)]
+    public float reproductionTime;
 
     // Visual settings:
-    float moveArcHeight = .2f;
+    protected float moveArcHeight = .2f;
 
     // State:
     [Header ("State")]
@@ -36,6 +43,8 @@ public class Animal : LivingEntity {
 
     protected LivingEntity foodTarget;
     protected Coord waterTarget;
+    protected List<Animal> predatorsInView;
+    protected List<Animal> fleeingKinInView;
 
     // Move data:
     bool animatingMovement;
@@ -53,6 +62,9 @@ public class Animal : LivingEntity {
     float lastActionChooseTime;
     const float sqrtTwo = 1.4142f;
     const float oneOverSqrtTwo = 1 / sqrtTwo;
+    // TODO: set reproduction start when it starts
+    float reproductionStartTime;
+
 
     public override void Init (Coord coord) {
         base.Init (coord);
@@ -64,13 +76,13 @@ public class Animal : LivingEntity {
         ChooseNextAction ();
     }
 
-
-
     protected virtual void Update () {
 
         // Increase hunger and thirst over time
         hunger += Time.deltaTime * 1 / timeToDeathByHunger;
         thirst += Time.deltaTime * 1 / timeToDeathByThirst;
+        // TODO: implement libido factor
+        // libido += Time.deltaTime * 1 / timeToMaxLibido;
 
         // Animate movement. After moving a single tile, the animal will be able to choose its next action
         if (animatingMovement) {
@@ -102,19 +114,48 @@ public class Animal : LivingEntity {
     protected virtual void ChooseNextAction () {
         lastActionChooseTime = Time.time;
         // Get info about surroundings
+        SenceDangers();
 
         // Decide next action:
-        // Eat if (more hungry than thirsty) or (currently eating and not critically thirsty)
-        bool currentlyEating = currentAction == CreatureAction.Eating && foodTarget && hunger > 0;
-        if (hunger >= thirst || currentlyEating && thirst < criticalPercent) {
-            FindFood ();
-        }
-        // More thirsty than hungry
-        else {
-            FindWater ();
+        // set the default action
+        currentAction = CreatureAction.Exploring;
+
+        // if there are no dengares near by
+        if (predatorsInView.Count == 0 && fleeingKinInView.Count == 0)
+        {
+            // Eat if (more hungry than thirsty) or (currently eating and not critically thirsty)
+            bool currentlyEating = currentAction == CreatureAction.Eating && foodTarget && hunger > 0;
+            if (hunger >= thirst || currentlyEating && thirst < criticalPercent)
+            {
+                FindFood();
+            }
+            // More thirsty than hungry
+            else
+            {
+                FindWater();
+            }
+        } else
+        {
+            FindSaferGround();
         }
 
+        // Execute current action action
         Act ();
+    }
+
+    protected virtual void FindSaferGround()
+    {
+        if (predatorsInView.Count == 0 && fleeingKinInView.Count > 0)
+        {
+            currentAction = CreatureAction.Distressed;
+        }
+        else
+        {
+            currentAction = CreatureAction.FleeingFromDanger;
+        }
+
+        // create path to neighbour
+        CreatePath(Environment.SenseSafestNeighbour(coord, this));
     }
 
     protected virtual void FindFood () {
@@ -123,10 +164,15 @@ public class Animal : LivingEntity {
             currentAction = CreatureAction.GoingToFood;
             foodTarget = foodSource;
             CreatePath (foodTarget.coord);
-
         } else {
             currentAction = CreatureAction.Exploring;
         }
+    }
+
+    public void SenceDangers()
+    {
+        predatorsInView = Environment.SensePredators(coord, this);
+        fleeingKinInView = Environment.SenceFleeingKin(coord, this);
     }
 
     protected virtual void FindWater () {
@@ -167,6 +213,32 @@ public class Animal : LivingEntity {
                 } else {
                     StartMoveToCoord (path[pathIndex]);
                     pathIndex++;
+                }
+                break;
+            case CreatureAction.SearchingForMate:
+                // TODO: implement
+                break;
+            case CreatureAction.Reproducing:
+                // TODO: do nothing until reproducing is finished
+                break;
+            case CreatureAction.FleeingFromDanger:
+                if (coord != path[pathIndex])
+                {
+                    StartMoveToCoord(path[pathIndex]);
+                    pathIndex++;
+                } else
+                {
+                    currentAction = CreatureAction.Resting;
+                }
+                break;
+            case CreatureAction.Distressed:
+                if (coord != path[pathIndex])
+                {
+                    StartMoveToCoord(path[pathIndex]);
+                    pathIndex++;
+                } else
+                {
+                    currentAction = CreatureAction.Resting;
                 }
                 break;
         }
@@ -231,7 +303,18 @@ public class Animal : LivingEntity {
                 thirst -= Time.deltaTime * 1 / drinkDuration;
                 thirst = Mathf.Clamp01 (thirst);
             }
+        } else if (currentAction == CreatureAction.Reproducing)
+        {
+            if (reproductionStartTime + reproductionTime > Time.time)
+            {
+                // TODO: if female then spawn offspring
+            }
         }
+    }
+
+    public List<Animal> GetVisibleDangers()
+    {
+        return predatorsInView.Concat(fleeingKinInView).ToList();
     }
 
     void AnimateMove () {
@@ -263,10 +346,14 @@ public class Animal : LivingEntity {
             }
 
             if (currentAction == CreatureAction.GoingToFood) {
-                var path = EnvironmentUtility.GetPath (coord.x, coord.y, foodTarget.coord.x, foodTarget.coord.y);
+                var path = EnvironmentUtility.GetPath(coord.x, coord.y, foodTarget.coord.x, foodTarget.coord.y);
                 Gizmos.color = Color.black;
-                for (int i = 0; i < path.Length; i++) {
-                    Gizmos.DrawSphere (Environment.tileCentres[path[i].x, path[i].y], .2f);
+                if (path != null)
+                {
+                    for (int i = 0; i < path.Length; i++)
+                    {
+                        Gizmos.DrawSphere(Environment.tileCentres[path[i].x, path[i].y], .2f);
+                    }
                 }
             }
         }
