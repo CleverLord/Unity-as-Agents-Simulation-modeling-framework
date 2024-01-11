@@ -72,11 +72,8 @@ public static class EnvironmentUtility {
         int absH = System.Math.Abs (h);
 
         // Is neighbouring tile
-        if (absW <= 1 && absH <= 1) { 
-            // return;
-            Coord[] p = new Coord[1];
-            p[0] = new Coord(x2, y2);
-            return p;
+        if (absW <= 1 && absH <= 1) {
+            return null;
         }
 
         int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
