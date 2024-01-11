@@ -1,4 +1,5 @@
-﻿public enum CreatureAction {
+﻿public enum CreatureAction
+{
     None,
     Resting,
     Exploring,
@@ -7,6 +8,7 @@
     Eating,
     Drinking,
     SearchingForMate,
-    InDirectDanger,
-    InIndirectDanger
+    Reproducing,
+    FleeingFromDanger,
+    Distressed
 }

@@ -134,6 +134,7 @@ MonoBehaviour:
   colourMaterialIndex: 0
   species: 8
   material: {fileID: 2100000, guid: 4f1aac096a6de4fa19b20fbb6e6c6e33, type: 2}
+  offspringSpawnRadious: 1.5
   coord:
     x: 0
     y: 0
@@ -143,7 +144,8 @@ MonoBehaviour:
     y: 0
   diet: 4
   currentAction: 0
-  maleColour: {r: 0, g: 0, b: 0, a: 0}
-  femaleColour: {r: 0, g: 0, b: 0, a: 0}
+  maleColour: {r: 0.3773585, g: 0, b: 0, a: 1}
+  femaleColour: {r: 0.8867924, g: 0.25035742, b: 0, a: 0}
+  reproductionTime: 0
   hunger: 0
   thirst: 0

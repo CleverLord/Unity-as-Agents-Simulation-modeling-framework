@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 // The map is divided into n x n regions, with a list of entities for each region
@@ -26,6 +27,13 @@ public class Map {
                 map[x, y] = new List<LivingEntity> ();
             }
         }
+    }
+
+    public List<Coord> GetUnoccupiedNeighbours (Coord coord, float viewDistance)
+    {
+        List<Coord> regionCoordsInViewDistance = GetRegionsInView(coord, viewDistance).Select(r => r.coord).ToList();
+        List<Coord> entityCoordsInViewDistance = GetEntities(coord, viewDistance).Select(e => e.coord).ToList();
+        return regionCoordsInViewDistance.Except(entityCoordsInViewDistance).ToList();
     }
 
     public List<LivingEntity> GetEntities (Coord origin, float viewDistance) {
