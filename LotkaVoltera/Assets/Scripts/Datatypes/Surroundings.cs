@@ -5,4 +5,5 @@ public class Surroundings {
     public LivingEntity nearestFoodSource;
     // TODO: implement nearest danger
     public List<Coord> moveDestinations;
+    public List<Animal> dangersInView;
 }

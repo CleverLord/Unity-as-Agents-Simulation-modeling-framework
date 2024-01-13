@@ -83,8 +83,6 @@ public class Plant : LivingEntity {
 
     private void Regrow()
     {
-        Debug.Log($"Regrowing");
-
         amountRemaining += Time.deltaTime * (regrowAmmount / regrowDuration); // fraction by which the plant should grow
         amountRemaining = Mathf.Clamp01(amountRemaining);
         transform.localScale = Vector3.one * amountRemaining; // adjust scale to curr size

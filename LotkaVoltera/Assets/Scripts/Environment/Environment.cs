@@ -50,10 +50,10 @@ public class Environment : MonoBehaviour {
 
     public static Dictionary<Species, Map> speciesMaps;
 
-    static float baseSafetyScore = 2f * (float)(Math.Sqrt(2f * Animal.maxViewDistance * Animal.maxViewDistance));
+    static float baseSafetyScore = Animal.maxViewDistance + (2f * (float)(Math.Sqrt(2f * Animal.maxViewDistance * Animal.maxViewDistance)));
 
     void Start () {
-        prng = new System.Random ();
+        prng = new System.Random (seed);
 
         Init (); // Trees are spawned here
         SpawnInitialPopulations (); // Species are spawned here
@@ -177,9 +177,6 @@ public class Environment : MonoBehaviour {
 
     public Coord? ChooseReproductionSpace (Coord coord, float reproductionRadious)
     {
-        // get pseudo random number generator
-        var spawnPrng = new System.Random(seed);
-
         // GetUnoccupiedNeighbours
         List<Coord> spawnCoords = spawnableCoords.Where(c => Coord.Distance(c, coord) <= reproductionRadious).ToList();
 
@@ -188,7 +185,7 @@ public class Environment : MonoBehaviour {
             return null;
 
         // get random possible pawn coordinates and return them
-        int offspringCoordIndex = spawnPrng.Next(0, spawnCoords.Count());
+        int offspringCoordIndex = prng.Next(0, spawnCoords.Count());
         return spawnCoords[offspringCoordIndex];
     }
 
@@ -320,7 +317,11 @@ public class Environment : MonoBehaviour {
             var visibleAnimal = (Animal) visibleEntities[i];
             if (visibleAnimal != self && visibleAnimal.genes.isMale != self.genes.isMale) {
                 if (visibleAnimal.currentAction == CreatureAction.SearchingForMate) {
-                    potentialMates.Add (visibleAnimal);
+                    // judge if animal resire each other 
+                    if (visibleAnimal.JudgeMate(coord, self) && self.JudgeMate(visibleAnimal.coord, visibleAnimal))
+                    {
+                        potentialMates.Add (visibleAnimal);
+                    }
                 }
 
             }
@@ -358,17 +359,14 @@ public class Environment : MonoBehaviour {
     }
 
     public static Surroundings Sense (Coord coord) {
-        var closestPlant = speciesMaps[Species.Plant].ClosestEntity (coord, Animal.maxViewDistance);
-        var surroundings = new Surroundings ();
+        var closestPlant = speciesMaps[Species.Plant].ClosestEntity(coord, Animal.maxViewDistance);
+        var surroundings = new Surroundings();
         surroundings.nearestFoodSource = closestPlant;
         surroundings.nearestWaterTile = closestVisibleWaterMap[coord.x, coord.y];
-        // TODO: calculate walkable tiles in view
         surroundings.moveDestinations = walkableCoords.Where(
             c => EnvironmentUtility.TileIsVisibile(coord.x, coord.y, c.x, c.y) &&
             Animal.maxViewDistance >= Coord.Distance(coord, c)
         ).ToList();
-
-        // TODO: calculate here the closest safest tile
 
         return surroundings;
     }
@@ -685,8 +683,37 @@ public class Environment : MonoBehaviour {
 
     private void OnDrawGizmosSelected()
     {
-        // draw danger map for Rabbits
+        // draw gizmo lines between animals that are current mates and going to each other
+        foreach (Species species in speciesMaps.Keys)
+        {
+            // draw this gizmo only for foxes and rabbits
+            if (species != Species.Rabbit ||
+                species != Species.Fox)
+                continue;
 
+            List<LivingEntity> alreadyConsidered = new List<LivingEntity>(); 
+            List<LivingEntity>[,] map = speciesMaps[species].map;
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    foreach (LivingEntity entity in map[i,j])
+                    {
+                        Animal animal = (Animal)entity;
+                        Animal? currMate = animal.GetCurrMate();
+                        if (currMate != null && !alreadyConsidered.Contains(animal))
+                        {
+                            Gizmos.color = Color.green;
+                            Gizmos.DrawLine(animal.transform.position, Environment.tileCentres[currMate.coord.x, currMate.coord.y]);
+                            alreadyConsidered.Add(animal);
+                            alreadyConsidered.Add(currMate);
+                        }
+                    }
+                }
+            }
+        }
+
+        // draw danger map for Rabbits
         foreach (Species species in safetyMapBySpecies.Keys)
         {
             if (species != Species.Rabbit)
@@ -699,7 +726,6 @@ public class Environment : MonoBehaviour {
             {
                 maxSafetyScore = 1f;
             }
-            Debug.Log($"Drawing safety map for species: {species}, MaxSafetyScore: {maxSafetyScore}");
 
             for (int i = 0; i < safetyMapBySpecies[species].GetLength(0); i++)
             {

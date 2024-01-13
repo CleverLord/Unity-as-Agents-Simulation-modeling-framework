@@ -1,4 +1,6 @@
-﻿using static System.Math;
+﻿using System.Linq;
+using UnityEngine;
+using static System.Math;
 
 public class Genes {
 
@@ -7,6 +9,8 @@ public class Genes {
     static readonly System.Random prng = new System.Random ();
 
     public readonly bool isMale;
+    // genes
+    // [0] - sexappeal
     public readonly float[] values;
 
     public Genes (float[] values) {
@@ -27,6 +31,18 @@ public class Genes {
         // TODO: implement inheritance
         Genes genes = new Genes (values);
         return genes;
+    }
+
+    public float GeneticDesirability ()
+    {
+        float resirablility = 0f;
+        // TODO: genes can have different weights
+        float singleGeneWeight = ((float)values.Length + 1f) / ((float)values.Length);
+        for (int i = 0; i < values.Length; i++)
+        {
+            resirablility += values[i] * singleGeneWeight;
+        }
+        return resirablility;
     }
 
     static float RandomValue () {
