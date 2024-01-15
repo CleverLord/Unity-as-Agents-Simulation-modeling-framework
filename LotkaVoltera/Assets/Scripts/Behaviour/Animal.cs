@@ -30,8 +30,8 @@ public class Animal : LivingEntity
     // Settings:
     float timeBetweenActionChoices = 1;
     float moveSpeed = 1.5f;
-    float timeToDeathByHunger = 300;
-    float timeToDeathByThirst = 200;
+    float timeToDeathByHunger = 150;
+    float timeToDeathByThirst = 100;
 
     [Tooltip("How simmilar in danger are distressed kin and predator to the animal"), Range(0f, 1f)]
     public float distressToDangerPreference = 0.99f;
@@ -561,14 +561,18 @@ public class Animal : LivingEntity
         }
         else if (currentAction == CreatureAction.Reproducing)
         {
-            if (reproductionStartTime + reproductionTime <= Time.time && genes.isMale == false)
+            if (reproductionStartTime + reproductionTime <= Time.time)
             {
-                // if female then spawn offspring
-                for (int i = 0; i < (int) GetRandomFloat(new System.Random(), 0f, maxOffspringPerMating); i++)
+                if (genes.isMale == false)
                 {
-                    // try to produce offspring
-                    reproduce(this);
+                    // if female then spawn offspring
+                    for (int i = 0; i < (int)GetRandomFloat(new System.Random(), 0f, maxOffspringPerMating); i++)
+                    {
+                        // try to produce offspring
+                        reproduce(this);
+                    }
                 }
+
                 // cleanup after reproducing
                 currentAction = CreatureAction.None;
                 libido = 0f;
