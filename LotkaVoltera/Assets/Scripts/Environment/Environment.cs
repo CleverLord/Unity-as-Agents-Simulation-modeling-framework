@@ -50,7 +50,7 @@ public class Environment : MonoBehaviour {
 
     public static Dictionary<Species, Map> speciesMaps;
 
-    static float baseSafetyScore = Animal.maxViewDistance + (2f * (float)(Math.Sqrt(2f * Animal.maxViewDistance * Animal.maxViewDistance)));
+    static float baseSafetyScore = (10 * Animal.maxViewDistance) + (2f * (float)(Math.Sqrt(2f * (Animal.maxViewDistance + 1))));
 
     void Start () {
         prng = new System.Random (seed);
@@ -101,6 +101,8 @@ public class Environment : MonoBehaviour {
         {
             for (int j = 0; j < safetyMapBySpecies[speciesInDanger].GetLength(1); j++)
             {
+                // clear also the evaluater tile array
+                evaluatedTile[i, j] = false;
                 if (walkable[i, j] == false)
                     continue;
 
@@ -114,6 +116,11 @@ public class Environment : MonoBehaviour {
         {
             List<Animal> dangers = self.GetVisibleDangers();
 
+            // if there are no visible dangers
+            // skip calculating safety score for this animal field of view
+            if (dangers.Count == 0)
+                continue;
+
             // consider all walkable tiles in view of the animal (visible and walkable)
             List<Coord> potentialDestinations = walkableCoords.Where(
                 c => EnvironmentUtility.TileIsVisibile(self.coord.x, self.coord.y, c.x, c.y) &&
@@ -125,6 +132,7 @@ public class Environment : MonoBehaviour {
             {
                 // Calculate safety score for the current tile
                 float safetyScore = 0f;
+                
 
                 foreach (Animal danger in dangers)
                 {
@@ -139,7 +147,7 @@ public class Environment : MonoBehaviour {
                     safetyScore *= walkableNeighboursCount;
 
                     float oldSafetyScore = safetyMapBySpecies[speciesInDanger][inViewCoord.x, inViewCoord.y];
-                    if (evaluatedTile[inViewCoord.x, inViewCoord.y] == false || oldSafetyScore < safetyScore)
+                    if (evaluatedTile[inViewCoord.x, inViewCoord.y] == false || oldSafetyScore > safetyScore)
                     {
                         safetyMapBySpecies[speciesInDanger][inViewCoord.x, inViewCoord.y] = safetyScore;
                         evaluatedTile[inViewCoord.x, inViewCoord.y] = true;
@@ -147,7 +155,23 @@ public class Environment : MonoBehaviour {
                 }
             }
         }
-        
+
+        float safetyScoreTrulySafeOrNoInfo = safetyMapBySpecies[speciesInDanger].Cast<float>().Max() + 1;
+
+        // clear animal safety map
+        for (int i = 0; i < safetyMapBySpecies[speciesInDanger].GetLength(0); i++)
+        {
+            for (int j = 0; j < safetyMapBySpecies[speciesInDanger].GetLength(1); j++)
+            {
+                if (evaluatedTile[i, j] == true)
+                    continue;
+                if (walkable[i, j] == false)
+                    continue;
+
+                safetyMapBySpecies[speciesInDanger][i, j] = safetyScoreTrulySafeOrNoInfo;
+            }
+        }
+
         if (speciesInDanger == Species.Rabbit)
         {
             List<float> flattened = safetyMapBySpecies[speciesInDanger].Cast<float>().ToList();
