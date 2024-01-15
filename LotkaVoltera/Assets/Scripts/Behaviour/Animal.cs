@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.ProBuilder.MeshOperations;
 using System;
+using Unity.Mathematics;
 
 [SelectionBase]
 public class Animal : LivingEntity
@@ -149,7 +150,8 @@ public class Animal : LivingEntity
 
             // try to produce offspring
             // if female then spawn offspring
-            for (int i = 0; i < maxOffspringPerMating; i++)
+            int randomOffspringNumber = maxOffspringPerMating + random.Next(0, 1 + 1);
+            for (int i = 0; i < randomOffspringNumber; i++)
             {
                 // try to produce offspring
                 reproduce(this);
@@ -214,6 +216,8 @@ public class Animal : LivingEntity
         offspring.hunger = 0f;
 
         offspring.libido = Time.time;
+        offspring.minTimeBetweenReproducing += (float) GetRandomFloat(new System.Random(), -15f, 25f);
+        offspring.minTimeBetweenReproducing = Mathf.Clamp(offspring.minTimeBetweenReproducing, 0f, 100f);
 
         offspring.maturity = 0.5f;
         // scale game object to apropriate size
@@ -245,7 +249,7 @@ public class Animal : LivingEntity
         // if there are no dengares near by
         if (lastDangerSeenTime + panicDuration > Time.time && predatorsInView.Count == 0 && fleeingKinInView.Count == 0)
         {
-            if (thirst < thirstThreshold || hunger < hungerThreshold)
+            if (thirst > thirstThreshold || hunger > hungerThreshold)
             {
                 // Eat if (more hungry than thirsty) or (currently eating and not critically thirsty)
                 bool currentlyEating = currentAction == CreatureAction.Eating && foodTarget && hunger > 0;

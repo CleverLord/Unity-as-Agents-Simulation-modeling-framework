@@ -142,10 +142,18 @@ MonoBehaviour:
   mapCoord:
     x: 0
     y: 0
+  maturity: 1
   diet: 4
   currentAction: 0
   maleColour: {r: 0.3773585, g: 0, b: 0, a: 1}
   femaleColour: {r: 0.8867924, g: 0.25035742, b: 0, a: 0}
-  reproductionTime: 0
+  distressToDangerPreference: 1
+  thirstThreshold: 0.769
+  hungerThreshold: 0.871
+  reproductionTime: 1
   hunger: 0
   thirst: 0
+  panicDuration: 0
+  growDuration: 1
+  maxOffspringPerMating: 1
+  minTimeBetweenReproducing: 81.8

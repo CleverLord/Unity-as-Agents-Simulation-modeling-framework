@@ -62,13 +62,15 @@ MonoBehaviour:
   maleColour: {r: 0.26415092, g: 0.16584621, b: 0.08597365, a: 0}
   femaleColour: {r: 0.6509434, g: 0.45010933, b: 0.3224012, a: 0}
   distressToDangerPreference: 1
-  reproductionTime: 4.5
+  thirstThreshold: 0.689
+  hungerThreshold: 0.818
+  reproductionTime: 1
   hunger: 0
   thirst: 0
-  panicDuration: 2
-  growDuration: 40.6
-  maxOffspringPerMating: 5
-  timeToMaxLibido: 40.6
+  panicDuration: 0
+  growDuration: 1
+  maxOffspringPerMating: 1
+  minTimeBetweenReproducing: 77.4
 --- !u!1001 &322534139445717557
 PrefabInstance:
   m_ObjectHideFlags: 0
