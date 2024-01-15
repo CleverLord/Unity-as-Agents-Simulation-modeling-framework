@@ -144,7 +144,7 @@ namespace TerrainGeneration
             if (dataPoints.Length == 0)
                 return;
             // Update X-axis data text based on the current width    
-            xAxisScaleTooltip.text = $"{(int) dataPoints[0].Count:F2}";
+            xAxisScaleTooltip.text = $"{dataPoints[0].Count:F2}";
 
             // Update Y-axis data text based on the current maxVisibleValue
             yAxisScaleTooltip.text = $"{maxVisibleValue:F2}";
