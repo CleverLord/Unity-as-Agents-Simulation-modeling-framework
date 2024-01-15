@@ -209,8 +209,8 @@ public class Environment : MonoBehaviour {
         if (spawnCoords.Count() == 0)
             return null;
 
-        // get random possible pawn coordinates and return them
-        int offspringCoordIndex = prng.Next(0, spawnCoords.Count());
+        // get random possible spawn coordinates and return them
+        int offspringCoordIndex = prng.Next(0, spawnCoords.Count);
         return spawnCoords[offspringCoordIndex];
     }
 
