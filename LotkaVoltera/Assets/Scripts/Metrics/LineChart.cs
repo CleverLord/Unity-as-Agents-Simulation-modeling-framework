@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using UnityEngine;
 
@@ -175,7 +176,7 @@ namespace TerrainGeneration
             lineRenderers[lineIdx].positionCount += 1;
 
             // if necesary set new max visible dataPoint value
-            if (maxVisibleValue < newValue)
+            if (!hideLines.Contains(lineIdx) && maxVisibleValue < newValue)
             {
                 maxVisibleValue = newValue;
             }
