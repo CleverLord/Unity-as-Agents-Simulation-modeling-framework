@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.ProBuilder.MeshOperations;
+using System;
 
 [SelectionBase]
 public class Animal : LivingEntity
@@ -27,8 +28,8 @@ public class Animal : LivingEntity
     // Settings:
     float timeBetweenActionChoices = 1;
     float moveSpeed = 1.5f;
-    float timeToDeathByHunger = 200;
-    float timeToDeathByThirst = 200;
+    float timeToDeathByHunger = 100;
+    float timeToDeathByThirst = 100;
 
     [Tooltip("How simmilar in danger are distressed kin and predator to the animal"), Range(0f, 1f)]
     public float distressToDangerPreference = 0.99f;
@@ -87,7 +88,7 @@ public class Animal : LivingEntity
     public float growDuration = 20;
 
     [Range(1, 100)]
-    public int maxOffspringPerMating = 1;
+    public int maxOffspringPerMating = 2;
     [Range(1, 100)]
     public float minTimeBetweenReproducing = 40f;
     private float libido;
@@ -113,9 +114,50 @@ public class Animal : LivingEntity
         growStartTime = Time.time + growDelay;
     }
 
+    static double GetRandomFloat(System.Random random, double minValue, double maxValue)
+    {
+        // Generate a random double between 0.0 (inclusive) and 1.0 (exclusive)
+        double randomDouble = random.NextDouble();
+
+        // Scale and shift the random double to fit within the specified range
+        double result = minValue + (randomDouble * (maxValue - minValue));
+
+        return result;
+    }
+
     protected virtual void Update()
     {
-        libido += Time.deltaTime;
+        // TODO: uncomment code when implementing true reproduction
+        // libido += Time.deltaTime;
+
+        if (maturity < 1f)
+        {
+            maturity += Time.deltaTime;
+            maturity = Mathf.Clamp01(maturity);
+            transform.localScale = Vector3.one * maturity;
+        }
+
+        // TODO: remove reproducion by cloning code
+        System.Random random = new System.Random();
+
+        // Get a random floating-point number within the specified range
+        double randomFloat = GetRandomFloat(random, 1f, 10f);
+        if (libido + minTimeBetweenReproducing + randomFloat <= Time.time)
+        {
+            // if animal meets conditions for reproduction
+            // and wants to reproduce
+
+            // try to produce offspring
+            // if female then spawn offspring
+            for (int i = 0; i < maxOffspringPerMating; i++)
+            {
+                // try to produce offspring
+                reproduce(this);
+            }
+
+            // cleanup after reproducing
+            libido = Time.time;
+        }
 
         if (Time.time > growStartTime && Time.time < growStartTime + growDuration &&
             maturity > 0f && maturity < 1f)
@@ -124,8 +166,8 @@ public class Animal : LivingEntity
         }
 
         // Increase hunger and thirst over time
-        hunger += Time.deltaTime * 1 / timeToDeathByHunger;
-        thirst += Time.deltaTime * 1 / timeToDeathByThirst;
+        hunger += Time.deltaTime * 1f / timeToDeathByHunger;
+        thirst += Time.deltaTime * 1f / timeToDeathByThirst;
         // increase libido
         libido += Time.deltaTime * 1f / minTimeBetweenReproducing;
 
@@ -168,6 +210,11 @@ public class Animal : LivingEntity
     {
         Animal offspring = Instantiate(this.gameObject).GetComponent<Animal>();
         // TODO: set child genetics based on parent and random mutation chance
+        offspring.thirst = 0f;
+        offspring.hunger = 0f;
+
+        offspring.libido = Time.time;
+
         offspring.maturity = 0.5f;
         // scale game object to apropriate size
         offspring.transform.localScale = Vector3.one * maturity;
@@ -197,7 +244,7 @@ public class Animal : LivingEntity
 
         // if there are no dengares near by
         if (lastDangerSeenTime + panicDuration > Time.time && predatorsInView.Count == 0 && fleeingKinInView.Count == 0)
-        {            
+        {
             if (thirst < thirstThreshold || hunger < hungerThreshold)
             {
                 // Eat if (more hungry than thirsty) or (currently eating and not critically thirsty)
@@ -213,11 +260,11 @@ public class Animal : LivingEntity
                     Debug.LogWarning($"{species} searching for water");
                     FindWater();
                 }
-            } else if (libido + minTimeBetweenReproducing <= Time.time && CanReproduce()) {
-                // if animal meets conditions for reproduction
-                // and wants to reproduce
-                FindMate();
-            }   
+            } else if (libido + minTimeBetweenReproducing <= Time.time && CanReproduce())
+            {
+                // TODO: implement reproduction with partner
+                // FindMate();
+            }
         }
         else
         {
