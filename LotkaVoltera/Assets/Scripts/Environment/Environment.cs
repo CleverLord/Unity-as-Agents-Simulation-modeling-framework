@@ -243,7 +243,7 @@ public class Environment : MonoBehaviour {
             spawnableCoords.Remove(spawnCoord);
         } else
         {
-            Debug.LogError($"Spawn was not possible for entity of species: {entity.species.ToString()} at coorinates: {spawnCoord.ToString()}");
+            Debug.LogWarning($"Spawn was not possible for entity of species: {entity.species.ToString()} at coorinates: {spawnCoord.ToString()}");
         }
 
         Debug.Log("Entity spawned");
