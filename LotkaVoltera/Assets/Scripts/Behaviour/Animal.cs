@@ -129,7 +129,6 @@ public class Animal : LivingEntity
 
     private void Start()
     {
-        // libido = Time.time;
         transform.localScale = Vector3.one * maturity;
         growStartTime = Time.time + growDelay;
     }
@@ -205,7 +204,7 @@ public class Animal : LivingEntity
         offspring.maturity = 0.5f;
         offspring.mother = this;
         offspring.father = mateTarget;
-        offspring.currentAction = CreatureAction.None;
+        offspring.currentAction = CreatureAction.Exploring;
 
         // clear relations with kin
         offspring.desiredMates = new List<Animal>();
@@ -468,6 +467,7 @@ public class Animal : LivingEntity
                     mateTarget.reproductionStartTime = reproductionStartTime;
                 } else
                 {
+                    CreatePath(mateTarget.coord);
                     StartMoveToCoord(path[pathIndex]);
                     pathIndex++;
                 }
@@ -476,7 +476,7 @@ public class Animal : LivingEntity
                 if (Coord.AreNeighbours(coord, dangerEscapeTarget))
                 {
                     LookAt(dangerEscapeTarget);
-                    currentAction = CreatureAction.Resting;
+                    currentAction = CreatureAction.Exploring;
                 }
                 else
                 {
@@ -488,7 +488,7 @@ public class Animal : LivingEntity
                 if (Coord.AreNeighbours(coord, dangerEscapeTarget))
                 {
                     LookAt(dangerEscapeTarget);
-                    currentAction = CreatureAction.Resting;
+                    currentAction = CreatureAction.Exploring;
                 }
                 else
                 {
@@ -586,7 +586,7 @@ public class Animal : LivingEntity
                 }
 
                 // cleanup after reproducing
-                currentAction = CreatureAction.None;
+                currentAction = CreatureAction.Exploring;
                 libido = 0f;
                 mateTarget = null;
                 path = null;
