@@ -58,6 +58,7 @@ public class Animal : LivingEntity
     protected Coord waterTarget;
     protected List<Animal> predatorsInView;
     protected List<Animal> fleeingKinInView;
+    protected Coord dangerEscapeTarget;
     protected Animal mateTarget;
 
     // animal parents
@@ -370,7 +371,8 @@ public class Animal : LivingEntity
         Coord? newSafeGround = Environment.SenseEscapeDestination(coord, this);
         if (newSafeGround != null)
         {
-            CreatePath(newSafeGround.Value);
+            dangerEscapeTarget = newSafeGround.Value;
+            CreatePath(dangerEscapeTarget);
         } else {
             Debug.LogWarning($"Animal of species: {species} could not find safer position in view, now Exploring!");
             currentAction = CreatureAction.Exploring;
@@ -471,14 +473,24 @@ public class Animal : LivingEntity
                 }
                 break;
             case CreatureAction.FleeingFromDanger:
-                if (path != null && coord != path[pathIndex])
+                if (Coord.AreNeighbours(coord, dangerEscapeTarget))
+                {
+                    LookAt(dangerEscapeTarget);
+                    currentAction = CreatureAction.Resting;
+                }
+                else
                 {
                     StartMoveToCoord(path[pathIndex]);
                     pathIndex++;
                 }
                 break;
             case CreatureAction.Distressed:
-                if (path != null && coord != path[pathIndex])
+                if (Coord.AreNeighbours(coord, dangerEscapeTarget))
+                {
+                    LookAt(dangerEscapeTarget);
+                    currentAction = CreatureAction.Resting;
+                }
+                else
                 {
                     StartMoveToCoord(path[pathIndex]);
                     pathIndex++;
