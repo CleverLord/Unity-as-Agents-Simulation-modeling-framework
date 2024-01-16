@@ -129,7 +129,7 @@ public class Plant : LivingEntity {
         // draw gizmos for tiles in plant can reproduce to
         foreach (Coord coord in Environment.spawnableCoords.Where(c => Coord.Distance(c, coord) <= offspringSpawnRadious).ToList())
         {
-            Gizmos.color = Color.green * new Color(1f, 1f, 1f, 0.6f);
+            Gizmos.color = Color.green * new Color(1f, 1f, 1f, 0.7f);
             float cubeSize = 1f;
             Gizmos.DrawCube(Environment.tileCentres[coord.x, coord.y], new Vector3(cubeSize, 0.1f, cubeSize));
         }
