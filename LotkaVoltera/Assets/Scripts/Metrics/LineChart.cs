@@ -41,6 +41,7 @@ namespace TerrainGeneration
         // Chart data
         private float[] maxLineValues;
         private List<float>[] dataPoints;
+        private List<float> timestamps;
         private int maxVisibleValueLineIndex = 0;
 
         // Drawing the chart
@@ -58,6 +59,7 @@ namespace TerrainGeneration
         // Start is called before the first frame update
         void Start()
         {
+            timestamps = new List<float>();
             maxLineValues = new float[lineRenderers.Length];
             // scale chart viewport to wordl size if scaler object exists
             if (chartToWorldScaler != null)
@@ -97,12 +99,12 @@ namespace TerrainGeneration
             // Add new data points to chart data
             UpdateDataPoints();
 
-            // Update axis data text every frame
-            UpdateAxisDataText();
 
             // redraw chart every frame
             if (Time.time > nextRedrawTime)
             {
+                // Update axis data text every frame
+                UpdateAxisDataText();
                 DrawChart();
                 nextRedrawTime = Time.time + visualUpdateDelay;
             }
@@ -148,13 +150,16 @@ namespace TerrainGeneration
             xAxisScaleTooltip.text = $"{dataPoints[0].Count:F2}";
 
             // Update Y-axis data text based on the current maxVisibleValue
-            yAxisScaleTooltip.text = $"{maxLineValues[maxVisibleValueLineIndex]:F2}";
+            yAxisScaleTooltip.text = $"{timestamps[timestamps.Count-1]:F2}";
         }
 
         // register new data points to apropriate indexes
         private void UpdateDataPoints()
         {
             Dictionary<Species, int> newDataEntry = dataSource.getAgregatedData();
+            float newDataEntryTime = Time.time;
+
+            timestamps.Add(newDataEntryTime);
 
             // if no new data exists
             if (newDataEntry.Count == 0)
