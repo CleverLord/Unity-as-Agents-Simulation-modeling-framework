@@ -31,7 +31,7 @@ public class Environment : MonoBehaviour {
     public float mapViewDst;
 
     // Cached data:
-    static List<Coord> spawnableCoords; // coordinates of all the unocupied map regions
+    public static List<Coord> spawnableCoords; // coordinates of all the unocupied map regions
 
     public static Vector3[, ] tileCentres;
     public static bool[, ] walkable;
@@ -203,14 +203,26 @@ public class Environment : MonoBehaviour {
     public Coord? ChooseReproductionSpace (Coord coord, float reproductionRadious)
     {
         // GetUnoccupiedNeighbours
-        List<Coord> spawnCoords = spawnableCoords.Where(c => Coord.Distance(c, coord) <= reproductionRadious).ToList();
+        List<Coord> notOcupiedCoordsInRadious = new List<Coord> ();
+        // add all the species in radious positions as coordinates to not spawnable
+        foreach (Species species in speciesMaps.Keys)
+        {
+            notOcupiedCoordsInRadious.Union(speciesMaps[species].GetUnoccupiedNeighbours(coord, reproductionRadious)).ToList();
+        }
 
-        // entity neighbourhood fully occupied
+        List<Coord> spawnCoords = notOcupiedCoordsInRadious.Union(
+            spawnableCoords.Where(
+                c => Coord.Distance(c, coord) <= reproductionRadious
+            ).ToList()
+        ).ToList();
+
+        // entity has no spawnable tiles in range
         if (spawnCoords.Count() == 0)
             return null;
 
         // get random possible spawn coordinates and return them
         int offspringCoordIndex = prng.Next(0, spawnCoords.Count);
+        
         return spawnCoords[offspringCoordIndex];
     }
 
@@ -222,8 +234,8 @@ public class Environment : MonoBehaviour {
             return;
 
         // Remove new spawn coordinates from spawnable list
-        // if spawn possible
-        if (spawnableCoords.Any(c => c == spawnCoord))
+        // if spawn possible and entity spawned can not move
+        if (spawnableCoords.Any(c => c == spawnCoord) && entity.species == Species.Plant)
         {
             // Add new entity
             speciesMaps[entity.species].Add(entity, spawnCoord);
