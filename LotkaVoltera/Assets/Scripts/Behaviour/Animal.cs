@@ -230,7 +230,7 @@ public class Animal : LivingEntity
     protected virtual void ChooseNextAction()
     {
         lastActionChooseTime = Time.time;
-        // Reproduction blinds animal
+        // Reproduction blocks all other actions untill its finished
         if (currentAction == CreatureAction.Reproducing)
             return;
         

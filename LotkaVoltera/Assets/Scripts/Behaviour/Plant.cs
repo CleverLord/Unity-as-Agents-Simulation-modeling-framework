@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [SelectionBase]
@@ -120,6 +121,17 @@ public class Plant : LivingEntity {
     public float AmountRemaining {
         get {
             return amountRemaining;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // draw gizmos for tiles in plant can reproduce to
+        foreach (Coord coord in Environment.spawnableCoords.Where(c => Coord.Distance(c, coord) <= offspringSpawnRadious).ToList())
+        {
+            Gizmos.color = Color.green * new Color(1f, 1f, 1f, 0.6f);
+            float cubeSize = 1f;
+            Gizmos.DrawCube(Environment.tileCentres[coord.x, coord.y], new Vector3(cubeSize, 0.1f, cubeSize));
         }
     }
 }
