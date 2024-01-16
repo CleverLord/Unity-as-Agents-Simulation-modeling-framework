@@ -141,7 +141,7 @@ public class Map {
         int index = e.mapIndex;
         int lastElementIndex = map[regionX, regionY].Count - 1;
         // If this entity is not last in the list, put the last entity in its place
-        if (index != lastElementIndex) {
+        if (index != lastElementIndex && lastElementIndex > 0) {
 
             map[regionX, regionY][index] = map[regionX, regionY][lastElementIndex];
             map[regionX, regionY][index].mapIndex = e.mapIndex;
