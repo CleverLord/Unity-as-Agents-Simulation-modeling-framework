@@ -19,7 +19,6 @@ public class CSVWriter : MonoBehaviour
     public string csvFileNameSufix = "species_count_over_time";
 
 
-    // TODO: header length has to match dataLine lengths beeing written to file
     // Data to be written to the CSV file
     [ReadOnlyWhenPlaying]
     public string[] header = { };
