@@ -3,7 +3,8 @@
 public class Surroundings {
     public Coord nearestWaterTile;
     public LivingEntity nearestFoodSource;
-    // TODO: implement nearest danger
+    // TODO: calculate suitable mates
     public List<Coord> moveDestinations;
+    // TODO: calculate nearest danger
     public List<Animal> dangersInView;
 }
