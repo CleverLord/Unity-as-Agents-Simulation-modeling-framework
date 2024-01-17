@@ -9,6 +9,7 @@ using UnityEngine.ProBuilder.MeshOperations;
 using System;
 using Unity.Mathematics;
 using UnityEditor;
+using UnityEngine.ProBuilder;
 
 [SelectionBase]
 public class Animal : LivingEntity
@@ -84,9 +85,8 @@ public class Animal : LivingEntity
     float lastDangerSeenTime;
     const float sqrtTwo = 1.4142f;
     const float oneOverSqrtTwo = 1 / sqrtTwo;
-    // TODO: set reproduction start when it starts
     float reproductionStartTime;
-    
+
     [Range(0f, 100f)]
     float growDelay = 5f;
     private float growStartTime;
@@ -99,7 +99,7 @@ public class Animal : LivingEntity
     [Range(1, 100)]
     public float minTimeBetweenReproducing = 40f;
     public float libido;
-    
+
     private List<Animal> desiredMates = new List<Animal>();
     private List<Animal> undesiredMates = new List<Animal>();
 
@@ -107,19 +107,29 @@ public class Animal : LivingEntity
     {
         base.Init(coord);
         moveFromCoord = coord;
-        // TODO: set child genetics based on parent and random mutation chance
-        genes = Genes.RandomGenes(1);
-
-        if (mother != null && father != null)
+        if (mother != null)
         {
             // add mother to undesired mates
-            if (genes.isMale == true)
-                undesiredMates.Add(mother);
-            else // add father to undesired mates
-                undesiredMates.Add(father);
+            undesiredMates.Add(mother);
+        }
+        if (father != null)
+        {
+            // add father to undesired mates
+            undesiredMates.Add(father); 
+        }
+
+        // set child genetics based on parent and random mutation chance
+        if (mother != null && father != null)
+        {
+            // inherit genes from parents
+            genes = Genes.InheritedGenes(mother.genes, father.genes);
 
             // look at father when bourne (mother might have the same position)
             LookAt(father.coord);
+        } else
+        {
+            // get random starting genes
+            genes = Genes.RandomGenes(1);
         }
 
         material.color = (genes.isMale) ? maleColour : femaleColour;
@@ -301,9 +311,11 @@ public class Animal : LivingEntity
         bool isMature = potentialMate.CanReproduce();
         bool isOppositeSex = genes.isMale != potentialMate.genes.isMale;
         bool isSearchingForMate = potentialMate.currentAction == CreatureAction.SearchingForMate;
-        bool isGeneticalyDesired = false;
-        // TODO: consider also: isParent, isSibling, isChild
+        bool isParent = (this == mother || this == father);
+        // TODO: consider also: isSibling, isChild
 
+        // Calculate if kin geneticaly desired
+        bool isGeneticalyDesired = false;
         float desirability = genes.GeneticDesirability();
         float desirabilityHalfed = desirability / 2f;
         float potentialMateDesirability = potentialMate.genes.GeneticDesirability();
@@ -316,11 +328,12 @@ public class Animal : LivingEntity
             isGeneticalyDesired = desirabilityHalfed <= potentialMateDesirability;
         }
 
-        bool isDesired = isMature && isOppositeSex && isSearchingForMate && isGeneticalyDesired;
-        
-        isDesired = isOppositeSex; // TODO: Remove (set only for debug purposes, calculate value correctly)
+        // TODO: calculate value correctly further limiting reproductive chance
+        // bool isDesired = isMature && isOppositeSex && isSearchingForMate && isGeneticalyDesired;
+        // set for testing purposee
+        bool isDesired = isOppositeSex;
 
-        // remember mate resirebility
+        // remember mate desirebility
         if (isDesired) { desiredMates.Add(potentialMate); } else { undesiredMates.Add(potentialMate); }
 
         return isDesired;
@@ -338,13 +351,20 @@ public class Animal : LivingEntity
         {
             // go to mate
             currentAction = CreatureAction.GoingToMate;
+            
+            // make animals a couple
             mateTarget = potentialMates.First();
-            CreatePath(mateTarget.coord);
+            mateTarget.mateTarget = this;
             
             // make mate go this animal
             mateTarget.currentAction = CreatureAction.GoingToMate;
-            mateTarget.mateTarget = this;
-            mateTarget.CreatePath(coord);
+            
+            // only calculate path if mate is not in neighbourhood
+            if (!Coord.AreNeighbours(coord, mateTarget.coord))
+            {
+                CreatePath(mateTarget.coord);
+                mateTarget.CreatePath(coord);
+            }
         } else
         {
             mateTarget = null;
@@ -371,7 +391,12 @@ public class Animal : LivingEntity
         if (newSafeGround != null)
         {
             dangerEscapeTarget = newSafeGround.Value;
-            CreatePath(dangerEscapeTarget);
+            // if you animal is not next to escape position
+            if (!Coord.AreNeighbours(coord, dangerEscapeTarget))
+            {
+                // make animal escape
+                CreatePath(dangerEscapeTarget);
+            }
         } else {
             Debug.LogWarning($"Animal of species: {species} could not find safer position in view, now Exploring!");
             currentAction = CreatureAction.Exploring;
