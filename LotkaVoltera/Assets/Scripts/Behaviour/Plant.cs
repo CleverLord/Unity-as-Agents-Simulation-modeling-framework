@@ -37,9 +37,6 @@ public class Plant : LivingEntity {
 
     private void Start()
     {
-        // Plant specific Living Entity config
-        offspringSpawnRadious = 1.5f;
-
         // Plant config
         // set plant game object scale before displaying it on screen for the first time
         transform.localScale = Vector3.one * amountRemaining;
