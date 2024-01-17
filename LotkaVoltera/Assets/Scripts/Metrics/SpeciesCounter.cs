@@ -78,8 +78,8 @@ public class SpeciesCounter : MonoBehaviour
         }
     }
 
-    // TODO: add different agregation methods: mean, median, min, max
-    public Dictionary<Species, int> getAgregatedData()
+    // TODO: implement other agregation methods: mean, median, min, max
+    public Dictionary<Species, int> getAggregatedData(AggregationMethod method = AggregationMethod.Mean)
     {
         // If any data in agregate buffor then agregate data
         if (speciesCountAgregator == null)
