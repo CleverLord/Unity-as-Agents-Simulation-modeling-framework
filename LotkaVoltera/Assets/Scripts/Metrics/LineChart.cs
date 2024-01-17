@@ -156,7 +156,7 @@ namespace TerrainGeneration
         // register new data points to apropriate indexes
         private void UpdateDataPoints()
         {
-            Dictionary<Species, int> newDataEntry = dataSource.getAgregatedData();
+            Dictionary<Species, int> newDataEntry = dataSource.getAggregatedData();
             float newDataEntryTime = Time.time;
 
             timestamps.Add(newDataEntryTime);
