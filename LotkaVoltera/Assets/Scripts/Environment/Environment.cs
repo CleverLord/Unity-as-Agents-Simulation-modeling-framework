@@ -720,74 +720,6 @@ public class Environment : MonoBehaviour {
 
     private void OnDrawGizmosSelected()
     {
-        // indicate animal current state
-        foreach (Species species in speciesMaps.Keys)
-        {
-            if (species == Species.Plant || species == Species.Undefined)
-                continue;
-
-
-            List<LivingEntity>[,] map = speciesMaps[species].map;
-
-            float stateGizmoColorAlpha = 0.8f;
-            float stateGizmoRadious = 0.3f;
-            for (int i = 0; i < map.GetLength(0); i++)
-            {
-                for (int j = 0; j < map.GetLength(1); j++)
-                {
-                    foreach (LivingEntity entity in map[i, j])
-                    {
-                        Animal animal = (Animal)entity;
-
-                        if (animal.currentAction == CreatureAction.Reproducing)
-                        {
-                            Gizmos.color = Color.green * new Color(1f, 1f, 1f, stateGizmoColorAlpha);
-                        } else if (animal.currentAction == CreatureAction.SearchingForMate) {
-                            Gizmos.color = Color.magenta * new Color(1f, 1f, 1f, stateGizmoColorAlpha);
-                        }
-                        else
-                        {
-                            Gizmos.color = Color.blue * new Color(1f, 1f, 1f, stateGizmoColorAlpha);
-                        }
-
-                        Gizmos.DrawSphere(animal.transform.position + new Vector3(0f, 1f, 0f), stateGizmoRadious);
-                        Gizmos.color *= new Color(1f, 1f, 1f, 1f);
-                        Gizmos.DrawWireSphere(animal.transform.position + new Vector3(0f, 1f, 0f), stateGizmoRadious);
-                    }
-                }
-            }
-        }
-
-        // draw gizmo lines between animals that are current mates and going to each other
-        foreach (Species species in speciesMaps.Keys)
-        {
-            // draw this gizmo only for foxes and rabbits
-            if (species != Species.Rabbit ||
-                species != Species.Fox)
-                continue;
-
-            List<LivingEntity> alreadyConsidered = new List<LivingEntity>(); 
-            List<LivingEntity>[,] map = speciesMaps[species].map;
-            for (int i = 0; i < map.GetLength(0); i++)
-            {
-                for (int j = 0; j < map.GetLength(1); j++)
-                {
-                    foreach (LivingEntity entity in map[i,j])
-                    {
-                        Animal animal = (Animal)entity;
-                        Animal? currMate = animal.GetCurrMate();
-                        if (currMate != null && !alreadyConsidered.Contains(animal))
-                        {
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawLine(animal.transform.position, Environment.tileCentres[currMate.coord.x, currMate.coord.y]);
-                            alreadyConsidered.Add(animal);
-                            alreadyConsidered.Add(currMate);
-                        }
-                    }
-                }
-            }
-        }
-
         // draw danger map for Rabbits
         foreach (Species species in safetyMapBySpecies.Keys)
         {
@@ -828,5 +760,76 @@ public class Environment : MonoBehaviour {
                 }
             }
         }
+
+        // indicate animal current state
+        foreach (Species species in speciesMaps.Keys)
+        {
+            if (species == Species.Plant || species == Species.Undefined)
+                continue;
+
+
+            List<LivingEntity>[,] map = speciesMaps[species].map;
+
+            float stateGizmoColorAlpha = 0.8f;
+            float stateGizmoRadious = 0.3f;
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    foreach (LivingEntity entity in map[i, j])
+                    {
+                        Animal animal = (Animal)entity;
+
+                        if (animal.currentAction == CreatureAction.Reproducing)
+                        {
+                            Gizmos.color = Color.green * new Color(1f, 1f, 1f, stateGizmoColorAlpha);
+                        }
+                        else if (animal.currentAction == CreatureAction.SearchingForMate)
+                        {
+                            Gizmos.color = Color.magenta * new Color(1f, 1f, 1f, stateGizmoColorAlpha);
+                        }
+                        else
+                        {
+                            Gizmos.color = Color.blue * new Color(1f, 1f, 1f, stateGizmoColorAlpha);
+                        }
+
+                        Gizmos.DrawSphere(animal.transform.position + new Vector3(0f, 1f, 0f), stateGizmoRadious);
+                        Gizmos.color *= new Color(1f, 1f, 1f, 1f);
+                        Gizmos.DrawWireSphere(animal.transform.position + new Vector3(0f, 1f, 0f), stateGizmoRadious);
+                    }
+                }
+            }
+        }
+
+        // draw gizmo lines between animals that are current mates and going to each other
+        foreach (Species species in speciesMaps.Keys)
+        {
+            // draw this gizmo only for foxes and rabbits
+            if (species != Species.Rabbit ||
+                species != Species.Fox)
+                continue;
+
+            List<LivingEntity> alreadyConsidered = new List<LivingEntity>();
+            List<LivingEntity>[,] map = speciesMaps[species].map;
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    foreach (LivingEntity entity in map[i, j])
+                    {
+                        Animal animal = (Animal)entity;
+                        Animal? currMate = animal.GetCurrMate();
+                        if (currMate != null && !alreadyConsidered.Contains(animal))
+                        {
+                            Gizmos.color = Color.green;
+                            Gizmos.DrawLine(animal.transform.position, Environment.tileCentres[currMate.coord.x, currMate.coord.y]);
+                            alreadyConsidered.Add(animal);
+                            alreadyConsidered.Add(currMate);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }
