@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Animal" Collapsed="true">
+    <Position X="2" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>8ATCgCBpkCORIxFAAAgDAQBgEoCCHoAOD2gSAGGCAEI=</HashCode>
+      <FileName>Assets\Scripts\Behaviour\Animal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fox" Collapsed="true">
+    <Position X="1" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Behaviour\Fox.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LivingEntity" Collapsed="true">
+    <Position X="3.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAQAAAAEAAgAABAAAAAAABAAAAIAAACQADABAA=</HashCode>
+      <FileName>Assets\Scripts\Behaviour\LivingEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Plant" Collapsed="true">
+    <Position X="4.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AASAAACJACACACEAAgCAAAQAAIACAIQAACAAAAGAAAA=</HashCode>
+      <FileName>Assets\Scripts\Behaviour\Plant.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rabbit" Collapsed="true">
+    <Position X="3.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Behaviour\Rabbit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EnumFlagsAttribute" Collapsed="true">
+    <Position X="12.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Datatypes\EnumFlagsAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Genes" Collapsed="true">
+    <Position X="9.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAQQAAAAAgAAAAAAAAAACAAAAAACAACIAIACAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Datatypes\Genes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ReadOnlyAttribute" Collapsed="true">
+    <Position X="11" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Datatypes\ReadOnlyAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ReadOnlyWhenPlayingAttribute" Collapsed="true">
+    <Position X="12.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Datatypes\ReadOnlyWhenPlayingAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Surroundings" Collapsed="true">
+    <Position X="9.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAEAAAAAAAAAAAAAAAAQgAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Datatypes\Surroundings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Environment" Collapsed="true">
+    <Position X="14.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAEBQMEACIATEBAGIAIAwIBCAkgQWAAAABKQSAMIAM=</HashCode>
+      <FileName>Assets\Scripts\Environment\Environment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EnvironmentUtility" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Environment\EnvironmentUtility.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Map" Collapsed="true">
+    <Position X="14.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAEAAAAIAAQQAABAAQLAAAAAgAAACAQAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Environment\Map.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CSVWriter" Collapsed="true">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAQAESAAAAAAAAAAACEAAAAAAQAAAgAAACAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Metrics\CSVWriter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimulationMetricsManager" Collapsed="true">
+    <Position X="14.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAHAAAAAAAEAAACAAAAAAAAAAAAAAABAAAAg=</HashCode>
+      <FileName>Assets\Scripts\Metrics\SimulationMetricsManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpeciesCounter" Collapsed="true">
+    <Position X="7.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAIACAAAABAGAAAEAAAAQAAAAAAgQABAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Metrics\SpeciesCounter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Noise" Collapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAwAEBAAIAACAQCgMAAgAABAACAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Assets\Scripts\Terrain\Noise.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TerrainGeneration.CameraController" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAABAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Environment\CameraController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TerrainGeneration.ChartToWorldScaler" Collapsed="true">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgCAAAAAAAAAAAAAAAAAAAADABAABAAAAAAQ=</HashCode>
+      <FileName>Assets\Scripts\Metrics\ChartToWorldScaler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TerrainGeneration.LineChart" Collapsed="true">
+    <Position X="12.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCFAAGQOAADYZAQAIAEAEAgAAEBAAAJAQAgEAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Metrics\LineChart.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TerrainGeneration.HeightmapGenerator" Collapsed="true">
+    <Position X="11" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Terrain\HeightmapGenerator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TerrainGeneration.NoiseSettings" Collapsed="true">
+    <Position X="9.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAQAAAAAACAEACAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Terrain\NoiseSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TerrainGeneration.TerrainGenerator" Collapsed="true">
+    <Position X="11" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAWAEAAAAAhAEEBAAAFAWCAABAABAAEAIAACAEAIIAk=</HashCode>
+      <FileName>Assets\Scripts\Terrain\TerrainGenerator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Coord" Collapsed="true">
+    <Position X="7.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAACABAEwAEAQAAAAAAIBoBAAABgAgAAgiA=</HashCode>
+      <FileName>Assets\Scripts\Datatypes\Coord.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="CauseOfDeath" Collapsed="true">
+    <Position X="7.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAIAAAgAAAAAACAAA=</HashCode>
+      <FileName>Assets\Scripts\Datatypes\CauseOfDeath.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CreatureAction" Collapsed="true">
+    <Position X="9.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAEAACAAAAAAICnCBAA=</HashCode>
+      <FileName>Assets\Scripts\Datatypes\CreatureAction.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Species" Collapsed="true">
+    <Position X="11" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Assets\Scripts\Datatypes\Species.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

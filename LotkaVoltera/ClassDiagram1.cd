@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Animal" Collapsed="true">
+    <Position X="6" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>8ATCgCBpkCORIxFAAAgDAQBgEoCCHoAOD2gSAGGCAEI=</HashCode>
+      <FileName>Assets\Scripts\Behaviour\Animal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fox" Collapsed="true">
+    <Position X="6" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Behaviour\Fox.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LivingEntity" Collapsed="true">
+    <Position X="7" Y="0.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAQAAAAEAAgAABAAAAAAABAAAAIAAACQADABAA=</HashCode>
+      <FileName>Assets\Scripts\Behaviour\LivingEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Plant" Collapsed="true">
+    <Position X="9" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AASAAACJACACACEAAgCAAAQAAIACAIQAACAAAAGAAAA=</HashCode>
+      <FileName>Assets\Scripts\Behaviour\Plant.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rabbit" Collapsed="true">
+    <Position X="7.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Behaviour\Rabbit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CSVWriter">
+    <Position X="15.75" Y="0.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACEAQAESAAAAAAAAAAACEAAAAAAQAAAgAAACAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Metrics\CSVWriter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimulationMetricsManager">
+    <Position X="13.25" Y="0.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAHAAAAAAAEAAACAAAAAAAAAAAAAAABAAAAg=</HashCode>
+      <FileName>Assets\Scripts\Metrics\SimulationMetricsManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpeciesCounter">
+    <Position X="11" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAIACAAAABAGAAAEAAAAQAAAAAAgQABAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Metrics\SpeciesCounter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TerrainGeneration.LineChart">
+    <Position X="17.75" Y="0.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAQCFAAGQOAADYZAQAIAEAEAgAAEBAAAJAQAgEAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Metrics\LineChart.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TerrainGeneration.ChartToWorldScaler">
+    <Position X="13.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgCAAAAAAAAAAAAAAAAAAAADABAABAAAAAAQ=</HashCode>
+      <FileName>Assets\Scripts\Metrics\ChartToWorldScaler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
