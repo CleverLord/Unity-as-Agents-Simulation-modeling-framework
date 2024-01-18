@@ -12,7 +12,7 @@ namespace TerrainGeneration
         // Start is called before the first frame update
         void Start()
         {
-            float halfWorldSize = generator.worldSize / 2;
+            float halfWorldSize = generator.worldSize / 2.0f;
             transform.position = new Vector3(halfWorldSize, 10, halfWorldSize);
             GetComponent<Camera>().orthographicSize = halfWorldSize;
         }
