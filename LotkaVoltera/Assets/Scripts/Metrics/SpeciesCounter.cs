@@ -74,7 +74,7 @@ public class SpeciesCounter : MonoBehaviour
             return;
         foreach (var entry in lastSpeciesCount)
         {
-            Debug.Log($"{entry.Key}: {entry.Value} occurrences");
+            // Debug.Log($"{entry.Key}: {entry.Value} occurrences");
         }
     }
 
