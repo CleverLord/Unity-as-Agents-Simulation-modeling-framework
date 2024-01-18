@@ -177,7 +177,7 @@ public class Environment : MonoBehaviour {
         {
             List<float> flattened = safetyMapBySpecies[speciesInDanger].Cast<float>().ToList();
             float maxSafetyScore = flattened.Max();
-            Debug.Log($"Recalculated safety map for species: {speciesInDanger}\nCall reason: {callReason}");
+            // Debug.Log($"Recalculated safety map for species: {speciesInDanger}\nCall reason: {callReason}");
         }
     }
 
@@ -200,7 +200,7 @@ public class Environment : MonoBehaviour {
         }
     }
 
-    public Coord? ChooseReproductionSpace (Coord coord, float reproductionRadious)
+    public Coord? SenceReproductionSpace (Coord coord, float reproductionRadious)
     {
         // GetUnoccupiedNeighbours
         List<Coord> notOcupiedCoordsInRadious = new List<Coord> ();
@@ -222,7 +222,8 @@ public class Environment : MonoBehaviour {
 
         // get random possible spawn coordinates and return them
         int offspringCoordIndex = prng.Next(0, spawnCoords.Count);
-        
+
+        spawnableCoords.Remove(spawnCoords[offspringCoordIndex]);
         return spawnCoords[offspringCoordIndex];
     }
 
@@ -235,7 +236,7 @@ public class Environment : MonoBehaviour {
 
         // Remove new spawn coordinates from spawnable list
         // if spawn possible and entity spawned can not move
-        if (spawnableCoords.Any(c => c == spawnCoord) && entity.species == Species.Plant)
+        if (spawnableCoords.Any(c => c == spawnCoord))
         {
             // Add new entity
             speciesMaps[entity.species].Add(entity, spawnCoord);
@@ -243,10 +244,10 @@ public class Environment : MonoBehaviour {
             spawnableCoords.Remove(spawnCoord);
         } else
         {
-            Debug.LogWarning($"Spawn was not possible for entity of species: {entity.species.ToString()} at coorinates: {spawnCoord.ToString()}");
+            // Debug.LogWarning($"Spawn was not possible for entity of species: {entity.species.ToString()} at coorinates: {spawnCoord.ToString()}");
         }
 
-        Debug.Log("Entity spawned");
+        // Debug.Log("Entity spawned");
         // recalculate safetyMaps
         RecalculateDangerMaps(entity, $"{entity.species} spawned");
     }
@@ -256,9 +257,12 @@ public class Environment : MonoBehaviour {
         speciesMaps[entity.species].Move (entity, from, to);
         // Remove new coordinates from spawnable and add old ones
         spawnableCoords.Remove(to);
-        spawnableCoords.Add(from);
+        // If there is a plant at "from" coords do not add them to spawnable ones
+        if (speciesMaps[Species.Plant].GetEntities(from, 0.5f).Count == 0)
+        
+            spawnableCoords.Add(from);
 
-        Debug.Log("Entity moved");
+        // Debug.Log("Entity moved");
         // recalculate safetyMaps
         RecalculateDangerMaps(entity, $"{entity.species} moved");
     }
@@ -269,7 +273,7 @@ public class Environment : MonoBehaviour {
         // Add freed coordinates to spawnable
         spawnableCoords.Add(entity.coord);
 
-        Debug.Log("Entity died");
+        // Debug.Log("Entity died");
         // recalculate safetyMaps
         RecalculateDangerMaps(entity, $"{entity.species} died");
     }
@@ -513,7 +517,7 @@ public class Environment : MonoBehaviour {
             int dangerMapBySpeciesRowCount = walkable.GetLength(0);
             int dangerMapBySpeciesColCount = walkable.GetLength(1);
             // initialize danger map array with default float values
-            Debug.Log($"Initializing safety maps");
+            // Debug.Log($"Initializing safety maps");
             safetyMapBySpecies[preySpecies] = new float[dangerMapBySpeciesRowCount, dangerMapBySpeciesColCount];
         }
 
@@ -640,7 +644,7 @@ public class Environment : MonoBehaviour {
         foreach (var pop in initialPopulations) {
             for (int i = 0; i < pop.count; i++) {
                 if (spawnCoords.Count == 0) {
-                    Debug.Log ("Ran out of empty tiles to spawn initial population");
+                    // Debug.Log ("Ran out of empty tiles to spawn initial population");
                     break;
                 }
                 int spawnCoordIndex = spawnPrng.Next (0, spawnCoords.Count);
@@ -665,9 +669,9 @@ public class Environment : MonoBehaviour {
     // spawn new plants descendant from current ones
     public void SpawnOffspring(LivingEntity entity)
     {
-        Debug.Log($"Trying to spawn new offspring for living entity of species: {entity.species}");
+        // Debug.Log($"Trying to spawn new offspring for living entity of species: {entity.species}");
         // Get new offspring spawn position
-        Coord? coord = ChooseReproductionSpace(entity.coord, entity.offspringSpawnRadious);
+        Coord? coord = SenceReproductionSpace(entity.coord, entity.offspringSpawnRadious);
 
         // if there are no spawnable map regions left
         if (!coord.HasValue) {
@@ -681,7 +685,7 @@ public class Environment : MonoBehaviour {
         offspring.Init(coord.Value);
         // register spawning new offspring
         RegisterSpawn(offspring, coord.Value);
-        Debug.Log($"Spawned new offspring for living entity of species: {entity.species}");
+        // Debug.Log($"Spawned new offspring for living entity of species: {entity.species}");
     }
 
 
@@ -753,7 +757,7 @@ public class Environment : MonoBehaviour {
                         }
                         else
                         {
-                            Gizmos.DrawWireCube(Environment.tileCentres[i, j], new Vector3(cubeSize, 0.1f, cubeSize));
+                            // Gizmos.DrawWireCube(Environment.tileCentres[i, j], new Vector3(cubeSize, 0.1f, cubeSize));
                         }
                     }
                
