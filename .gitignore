@@ -1,0 +1,15 @@
+.idea
+Game Of Life/Library
+Game Of Life/Temp
+Game Of Life/Logs
+Game Of Life/UserSettings
+Game Of Life/obj/Debug
+#Game Of Life/Builds/
+Game Of Life/Builds/GameOfLife_LinuxServerBuild_BurstDebugInformation_DoNotShip
+Game Of Life/MemoryCaptures
+ML-Agents-Dungeon-Escape/Library
+ML-Agents-Dungeon-Escape/Temp
+ML-Agents-Dungeon-Escape/Logs
+ML-Agents-Dungeon-Escape/UserSettings
+ML-Agents-Dungeon-Escape/obj/Debug
+**/ML-Agents-Dungeon-Escape/UserSettings
