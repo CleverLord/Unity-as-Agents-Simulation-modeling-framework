@@ -2,13 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.ProBuilder.MeshOperations;
+using System;
+using Unity.Mathematics;
+using UnityEditor;
+using UnityEngine.ProBuilder;
 
 [SelectionBase]
 public class Animal : LivingEntity
 {
 
+    [ReadOnly]
+    public float maturity = 1f;
+    float growAmmount;
     public const int maxViewDistance = 5;
 
     [EnumFlags]
@@ -22,19 +31,21 @@ public class Animal : LivingEntity
     // Settings:
     float timeBetweenActionChoices = 1;
     float moveSpeed = 1.5f;
-    float timeToDeathByHunger = 200;
-    float timeToDeathByThirst = 200;
+    float timeToDeathByHunger = 150;
+    float timeToDeathByThirst = 100;
 
     [Tooltip("How simmilar in danger are distressed kin and predator to the animal"), Range(0f, 1f)]
-    public float distressToDangerPreference = 0.5f;
+    public float distressToDangerPreference = 0.99f;
 
     float drinkDuration = 6;
     float eatDuration = 10;
 
-    [Range(0.1f, 1f)]
-    float criticalPercent = 0.7f;
+    [Tooltip("How thirsty before seeking water"), Range(0.01f, 1f)]
+    public float thirstThreshold = 0.3f;
+    [Tooltip("How hungry before seeking food"), Range(0.01f, 1f)]
+    public float hungerThreshold = 0.5f;
     [Range(1, 100)]
-    public float reproductionTime;
+    public float reproductionTime = 5.0f;
 
     // Visual settings:
     protected float moveArcHeight = .2f;
@@ -48,6 +59,12 @@ public class Animal : LivingEntity
     protected Coord waterTarget;
     protected List<Animal> predatorsInView;
     protected List<Animal> fleeingKinInView;
+    protected Coord dangerEscapeTarget;
+    protected Animal mateTarget;
+
+    // animal parents
+    Animal mother;
+    Animal father;
 
     // Move data:
     bool animatingMovement;
@@ -68,29 +85,89 @@ public class Animal : LivingEntity
     float lastDangerSeenTime;
     const float sqrtTwo = 1.4142f;
     const float oneOverSqrtTwo = 1 / sqrtTwo;
-    // TODO: set reproduction start when it starts
     float reproductionStartTime;
 
+    [Range(0f, 100f)]
+    float growDelay = 5f;
+    private float growStartTime;
+    // offspring grow duration
+    [Range(1, 100)]
+    public float growDuration = 20;
+
+    [Range(1, 10)]
+    public int maxOffspringPerMating = 2;
+    [Range(1, 100)]
+    public float minTimeBetweenReproducing = 40f;
+    public float libido;
+
+    private List<Animal> desiredMates = new List<Animal>();
+    private List<Animal> undesiredMates = new List<Animal>();
 
     public override void Init(Coord coord)
     {
         base.Init(coord);
         moveFromCoord = coord;
-        genes = Genes.RandomGenes(1);
+        if (mother != null)
+        {
+            // add mother to undesired mates
+            undesiredMates.Add(mother);
+        }
+        if (father != null)
+        {
+            // add father to undesired mates
+            undesiredMates.Add(father); 
+        }
+
+        // set child genetics based on parent and random mutation chance
+        if (mother != null && father != null)
+        {
+            // inherit genes from parents
+            genes = Genes.InheritedGenes(mother.genes, father.genes);
+
+            // look at father when bourne (mother might have the same position)
+            LookAt(father.coord);
+        } else
+        {
+            // get random starting genes
+            genes = Genes.RandomGenes(1);
+        }
 
         material.color = (genes.isMale) ? maleColour : femaleColour;
 
         ChooseNextAction();
     }
 
+    private void Start()
+    {
+        transform.localScale = Vector3.one * maturity;
+        growStartTime = Time.time + growDelay;
+    }
+
+    static double GetRandomFloat(System.Random random, double minValue, double maxValue)
+    {
+        // Generate a random double between 0.0 (inclusive) and 1.0 (exclusive)
+        double randomDouble = random.NextDouble();
+
+        // Scale and shift the random double to fit within the specified range
+        double result = minValue + (randomDouble * (maxValue - minValue));
+
+        return result;
+    }
+
     protected virtual void Update()
     {
+        if (Time.time > growStartTime && Time.time < growStartTime + growDuration &&
+            maturity > 0f && maturity < 1f)
+        {
+            Grow();
+        }
 
         // Increase hunger and thirst over time
-        hunger += Time.deltaTime * 1 / timeToDeathByHunger;
-        thirst += Time.deltaTime * 1 / timeToDeathByThirst;
-        // TODO: implement libido factor
-        // libido += Time.deltaTime * 1 / timeToMaxLibido;
+        hunger += Time.deltaTime * 1f / timeToDeathByHunger;
+        thirst += Time.deltaTime * 1f / timeToDeathByThirst;
+        // increase libido
+        if (maturity >= 1f)
+            libido += Time.deltaTime * 1f / minTimeBetweenReproducing;
 
         // Animate movement. After moving a single tile, the animal will be able to choose its next action
         if (animatingMovement)
@@ -110,17 +187,52 @@ public class Animal : LivingEntity
 
         if (hunger >= 1)
         {
+            // Debug.Log($"{species} died of hunger");
             Die(CauseOfDeath.Hunger);
         }
         else if (thirst >= 1)
         {
+            // Debug.Log($"{species} died of thirst");
             Die(CauseOfDeath.Thirst);
         }
+    }
+
+    private void Grow()
+    {
+        maturity += growAmmount * (Time.deltaTime / growDuration); // fraction by which the animal should grow
+        maturity = Mathf.Clamp01(maturity);
+        transform.localScale = Vector3.one * maturity; // adjust scale to curr size
+    }
+
+    public override LivingEntity GetOffspring()
+    {
+        Animal offspring = Instantiate(this.gameObject).GetComponent<Animal>();        
+        // set initial state based on parents
+        offspring.thirst = 0f;
+        offspring.hunger = 0f;
+        offspring.libido = 0f;
+        offspring.mateTarget = null;
+        offspring.maturity = 0.5f;
+        offspring.mother = this;
+        offspring.father = mateTarget;
+        offspring.currentAction = CreatureAction.Exploring;
+
+        // clear relations with kin
+        offspring.desiredMates = new List<Animal>();
+        offspring.undesiredMates = new List<Animal>();
+
+        // scale game object to apropriate size
+        offspring.transform.localScale = Vector3.one * maturity;
+        offspring.growAmmount = 1f - offspring.maturity;
+        // reference to environment offspring spawner method
+        offspring.reproduce = reproduce;
+        return offspring;
     }
 
     // Get consumed in whole
     public void Consume()
     {
+        // Debug.Log($"{species} was eaten");
         Die(CauseOfDeath.Eaten);
     }
 
@@ -129,36 +241,139 @@ public class Animal : LivingEntity
     protected virtual void ChooseNextAction()
     {
         lastActionChooseTime = Time.time;
+        // Reproduction blocks all other actions untill its finished
+        if (currentAction == CreatureAction.Reproducing)
+            return;
+        
         // Get info about surroundings
         SenceDangers();
 
         // Decide next action:
         // set the default action
-        currentAction = CreatureAction.FleeingFromDanger;
+        // currentAction = CreatureAction.FleeingFromDanger;
 
         // if there are no dengares near by
-        if (lastDangerSeenTime + panicDuration > Time.time && predatorsInView.Count == 0 && fleeingKinInView.Count == 0)
+        if ((lastDangerSeenTime + panicDuration) <= Time.time && predatorsInView.Count == 0 && fleeingKinInView.Count == 0)
         {
-            // Eat if (more hungry than thirsty) or (currently eating and not critically thirsty)
-            bool currentlyEating = currentAction == CreatureAction.Eating && foodTarget && hunger > 0;
-            if (hunger >= thirst || currentlyEating && thirst < criticalPercent)
+            bool stillThirsty = currentAction == CreatureAction.Drinking && thirst > 0;
+            bool stillHungry = currentAction == CreatureAction.Eating && hunger > 0 && foodTarget != null;
+            
+            // if currently dringing or eating
+            if (thirst > thirstThreshold || stillThirsty || hunger > hungerThreshold || stillHungry)
             {
-                FindFood();
-            }
-            // More thirsty than hungry
-            else
+                // Eat if (more hungry than thirsty) or (currently eating and not critically thirsty)
+                bool currentlyEating = currentAction == CreatureAction.Eating && foodTarget && hunger > 0;
+                if (hunger >= thirst || currentlyEating && thirst < hungerThreshold)
+                {
+                    // Debug.LogWarning($"{species} searching for food");
+                    FindFood();
+                }
+                // More thirsty than hungry
+                else
+                {
+                    // Debug.LogWarning($"{species} searching for water");
+                    FindWater();
+                }
+            } else if (mateTarget == null && libido >= 1f && CanReproduce())
             {
-                FindWater();
+                FindMate();
             }
         }
         else
         {
-            lastDangerSeenTime = Time.time;
+            if (predatorsInView.Count > 0 || fleeingKinInView.Count > 0)
+                lastDangerSeenTime = Time.time;
             FindSaferGround();
         }
 
         // Execute current action action
         Act();
+    }
+
+    public bool CanReproduce()
+    {
+        return maturity >= 1f;
+    }
+
+    public bool JudgeMate(Coord coord, Animal potentialMate)
+    {
+        // can not reproduce with non existing partner
+        // do not remember judgement for non existing partner
+        if (potentialMate == null)
+            return false;
+        if (undesiredMates.Contains(potentialMate))
+        {
+            return false;
+        }
+        if (desiredMates.Contains(potentialMate))
+        {
+            return true;
+        }
+
+        bool isMature = potentialMate.CanReproduce();
+        bool isOppositeSex = genes.isMale != potentialMate.genes.isMale;
+        bool isSearchingForMate = potentialMate.currentAction == CreatureAction.SearchingForMate;
+        bool isParent = (potentialMate == mother || potentialMate == father);
+        bool hasTheSameMother = (potentialMate.mother != null && potentialMate.mother == mother);
+        bool hasTheSameFather = (potentialMate.father != null && potentialMate.father == father);
+        bool isSibling = hasTheSameMother && hasTheSameFather;
+        // TODO: consider also: isSibling, isChild
+
+        // Calculate if kin geneticaly desired
+        bool isGeneticalyDesired = false;
+        float desirability = genes.GeneticDesirability();
+        float desirabilityHalfed = desirability / 2f;
+        float potentialMateDesirability = potentialMate.genes.GeneticDesirability();
+        // females only want to reproduce with not less desirable mates than themselves
+        if (genes.isMale == false) {
+            isGeneticalyDesired = desirability <= potentialMateDesirability;
+        } else
+        {
+            // males want to reproduce with females at least half as desirable as them
+            isGeneticalyDesired = desirabilityHalfed <= potentialMateDesirability;
+        }
+
+        // TODO: calculate value correctly further limiting reproductive chance
+        // bool isDesired = isMature && isOppositeSex && isSearchingForMate && isGeneticalyDesired;
+        // set for testing purposee
+        bool isDesired = isOppositeSex;
+
+        // remember mate desirebility
+        if (isDesired) { desiredMates.Add(potentialMate); } else { undesiredMates.Add(potentialMate); }
+
+        return isDesired;
+    }
+
+    protected virtual void FindMate()
+    {
+        // search for mate
+        currentAction = CreatureAction.SearchingForMate;
+
+        List<Animal> potentialMates = Environment.SensePotentialMates(coord, this);
+        
+        // if has no mate yet and sees potential mates in state of searching for one
+        if (mateTarget == null && potentialMates.Count > 0)
+        {
+            // go to mate
+            currentAction = CreatureAction.GoingToMate;
+            
+            // make animals a couple
+            mateTarget = potentialMates.First();
+            mateTarget.mateTarget = this;
+            
+            // make mate go this animal
+            mateTarget.currentAction = CreatureAction.GoingToMate;
+            
+            // only calculate path if mate is not in neighbourhood
+            if (!Coord.AreNeighbours(coord, mateTarget.coord))
+            {
+                CreatePath(mateTarget.coord);
+                mateTarget.CreatePath(coord);
+            }
+        } else
+        {
+            mateTarget = null;
+        }
     }
 
     protected virtual void FindSaferGround()
@@ -180,9 +395,15 @@ public class Animal : LivingEntity
         Coord? newSafeGround = Environment.SenseEscapeDestination(coord, this);
         if (newSafeGround != null)
         {
-            CreatePath(newSafeGround.Value);
+            dangerEscapeTarget = newSafeGround.Value;
+            // if you animal is not next to escape position
+            if (!Coord.AreNeighbours(coord, dangerEscapeTarget))
+            {
+                // make animal escape
+                CreatePath(dangerEscapeTarget);
+            }
         } else {
-            Debug.LogWarning($"Animal of species: {species} could not find safer position in view, now Exploring!");
+            // Debug.LogWarning($"Animal of species: {species} could not find safer position in view, now Exploring!");
             currentAction = CreatureAction.Exploring;
         }
     }
@@ -261,22 +482,45 @@ public class Animal : LivingEntity
                 }
                 break;
             case CreatureAction.SearchingForMate:
-                // TODO: implement
-                // if mate is close enough to start reproducing
-                // change currect action to Reproducing
-                // currentAction = CreatureAction.Reproducing;
-                    // TODO: do nothing until reproducing is finished
-                // when reproduction is finished spawn offspring
+                // exploring in hopes of finding mate
+                StartMoveToCoord(Environment.GetNextTileWeighted(coord, moveFromCoord));
+                break;
+            case CreatureAction.GoingToMate:
+                LookAt(mateTarget.coord);
+                if (Coord.AreNeighbours(coord, mateTarget.coord))
+                {
+                    path = null;
+                    currentAction = CreatureAction.Reproducing;
+                    mateTarget.path = null;
+                    reproductionStartTime = Time.time;
+                    mateTarget.currentAction = CreatureAction.Reproducing;
+                    mateTarget.reproductionStartTime = reproductionStartTime;
+                } else
+                {
+                    CreatePath(mateTarget.coord);
+                    StartMoveToCoord(path[pathIndex]);
+                    pathIndex++;
+                }
                 break;
             case CreatureAction.FleeingFromDanger:
-                if (path != null && coord != path[pathIndex])
+                if (Coord.AreNeighbours(coord, dangerEscapeTarget))
+                {
+                    LookAt(dangerEscapeTarget);
+                    currentAction = CreatureAction.Exploring;
+                }
+                else
                 {
                     StartMoveToCoord(path[pathIndex]);
                     pathIndex++;
                 }
                 break;
             case CreatureAction.Distressed:
-                if (path != null && coord != path[pathIndex])
+                if (Coord.AreNeighbours(coord, dangerEscapeTarget))
+                {
+                    LookAt(dangerEscapeTarget);
+                    currentAction = CreatureAction.Exploring;
+                }
+                else
                 {
                     StartMoveToCoord(path[pathIndex]);
                     pathIndex++;
@@ -335,7 +579,7 @@ public class Animal : LivingEntity
                 else if (diet == Species.Fox)
                 {
                     // At the moment foxes can not get eaten
-                    Debug.LogError("Not implemented Eating interaction for eating a Fox!");
+                    // Debug.LogError("Not implemented Eating interaction for eating a Fox!");
                 }
                 else if (diet == Species.Plant)
                 {
@@ -345,7 +589,7 @@ public class Animal : LivingEntity
                 }
                 else
                 {
-                    Debug.LogError("Not implemented Eating interaction!");
+                    // Debug.LogError("Not implemented Eating interaction!");
                 }
             }
         }
@@ -359,9 +603,23 @@ public class Animal : LivingEntity
         }
         else if (currentAction == CreatureAction.Reproducing)
         {
-            if (reproductionStartTime + reproductionTime > Time.time)
+            if (reproductionStartTime + reproductionTime <= Time.time)
             {
-                // TODO: if female then spawn offspring
+                if (genes.isMale == false)
+                {
+                    // if female then spawn offspring
+                    for (int i = 0; i < (int)GetRandomFloat(new System.Random(), 1f, maxOffspringPerMating); i++)
+                    {
+                        // try to produce offspring
+                        reproduce(this);
+                    }
+                }
+
+                // cleanup after reproducing
+                currentAction = CreatureAction.Exploring;
+                libido = 0f;
+                mateTarget = null;
+                path = null;
             }
         }
     }
@@ -388,6 +646,11 @@ public class Animal : LivingEntity
             moveTime = 0;
             ChooseNextAction();
         }
+    }
+
+    public Animal? GetCurrMate()
+    {
+        return mateTarget;
     }
 
     void OnDrawGizmosSelected()
@@ -436,9 +699,42 @@ public class Animal : LivingEntity
             // draw gizmos for tiles in animal persivable surroundings
             foreach (Coord coord in surroundings.moveDestinations)
             {
-                Gizmos.color = Color.blue * new Color(1f, 1f, 1f, 0.7f);
+                Gizmos.color = Color.blue * new Color(1f, 1f, 1f, 0.6f);
                 float cubeSize = 1f;
                 Gizmos.DrawCube(Environment.tileCentres[coord.x, coord.y], new Vector3(cubeSize, 0.1f, cubeSize));
+            }
+
+            if (currentAction == CreatureAction.GoingToMate)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawLine(transform.position, Environment.tileCentres[mateTarget.coord.x, mateTarget.coord.y]);
+            }
+
+            // draw red gizmo line for judged, rejected mates
+            foreach (Animal mate in undesiredMates)
+            {
+                if (mate != null && mate.coord != null)
+                {
+                    Gizmos.color = Color.red * new Color(1f, 1f, 1f, 1f);
+                    Gizmos.DrawLine(transform.position, new Vector3(mateTarget.coord.x, 0f, mateTarget.coord.y));
+                }
+            }
+
+            // draw gray gizmo line line for judged, deired mates
+            foreach (Animal mate in desiredMates)
+            {
+                if (mate != null && mate.coord != null)
+                {
+                    if (mate != mateTarget)
+                    {
+                        Gizmos.color = Color.gray * new Color(1f, 1f, 1f, 1f);
+                    }
+                    else // draw green gizmo line for current mate                    
+                    {
+                        Gizmos.color = Color.green * new Color(1f, 1f, 1f, 1f);
+                    }
+                    Gizmos.DrawLine(transform.position, new Vector3(mateTarget.coord.x, 0f, mateTarget.coord.y));
+                }
             }
         }
     }

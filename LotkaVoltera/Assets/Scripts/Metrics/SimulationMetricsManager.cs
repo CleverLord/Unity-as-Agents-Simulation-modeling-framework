@@ -8,7 +8,6 @@ using UnityEngine;
 public class SimulationMetricsManager : MonoBehaviour
 {
     // File path for the metrics files
-    // TODO: make valraible read only during runtime
     [ReadOnlyWhenPlaying]
     public string metricsFolder = "/Metrics";
     
@@ -37,7 +36,7 @@ public class SimulationMetricsManager : MonoBehaviour
             // get curr game time
             float currElapsedTime = Time.time;
             // get agregated species count data and
-            Dictionary<Species, int> data = speciesCounter.getAgregatedData();
+            Dictionary<Species, int> data = speciesCounter.getAggregatedData();
             // write to file if there is any data to be written
             if (data.Count != 0)
             {

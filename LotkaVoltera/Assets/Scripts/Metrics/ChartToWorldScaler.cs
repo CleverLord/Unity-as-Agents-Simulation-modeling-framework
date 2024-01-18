@@ -15,6 +15,8 @@ namespace TerrainGeneration
         public float OffsetX = 0;
         [ReadOnlyWhenPlaying, Range(-100, 100)]
         public float OffsetY = 2;
+        [ReadOnlyWhenPlaying, Range(-100, 100)]
+        public float OffsetZ = 10;
 
 
         // Start is called before the first frame update
@@ -39,7 +41,7 @@ namespace TerrainGeneration
             gameObject.transform.position = new Vector3(
                 terrMesh.gameObject.transform.position.x + OffsetX,
                 terrMesh.gameObject.transform.position.y + OffsetY,
-                terrMesh.gameObject.transform.position.z + worldSize
+                terrMesh.gameObject.transform.position.z + worldSize + OffsetZ
             );
         }
     }

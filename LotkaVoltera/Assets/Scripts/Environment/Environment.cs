@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TerrainGeneration;
+using UnityEditor;
 using UnityEditorInternal.VR;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
@@ -30,7 +31,7 @@ public class Environment : MonoBehaviour {
     public float mapViewDst;
 
     // Cached data:
-    static List<Coord> spawnableCoords; // coordinates of all the unocupied map regions
+    public static List<Coord> spawnableCoords; // coordinates of all the unocupied map regions
 
     public static Vector3[, ] tileCentres;
     public static bool[, ] walkable;
@@ -50,10 +51,10 @@ public class Environment : MonoBehaviour {
 
     public static Dictionary<Species, Map> speciesMaps;
 
-    static float baseSafetyScore = 2f * (float)(Math.Sqrt(2f * Animal.maxViewDistance * Animal.maxViewDistance));
+    static float baseSafetyScore = (10 * Animal.maxViewDistance) + (2f * (float)(Math.Sqrt(2f * (Animal.maxViewDistance + 1))));
 
     void Start () {
-        prng = new System.Random ();
+        prng = new System.Random (seed);
 
         Init (); // Trees are spawned here
         SpawnInitialPopulations (); // Species are spawned here
@@ -101,6 +102,8 @@ public class Environment : MonoBehaviour {
         {
             for (int j = 0; j < safetyMapBySpecies[speciesInDanger].GetLength(1); j++)
             {
+                // clear also the evaluater tile array
+                evaluatedTile[i, j] = false;
                 if (walkable[i, j] == false)
                     continue;
 
@@ -114,6 +117,11 @@ public class Environment : MonoBehaviour {
         {
             List<Animal> dangers = self.GetVisibleDangers();
 
+            // if there are no visible dangers
+            // skip calculating safety score for this animal field of view
+            if (dangers.Count == 0)
+                continue;
+
             // consider all walkable tiles in view of the animal (visible and walkable)
             List<Coord> potentialDestinations = walkableCoords.Where(
                 c => EnvironmentUtility.TileIsVisibile(self.coord.x, self.coord.y, c.x, c.y) &&
@@ -125,6 +133,7 @@ public class Environment : MonoBehaviour {
             {
                 // Calculate safety score for the current tile
                 float safetyScore = 0f;
+                
 
                 foreach (Animal danger in dangers)
                 {
@@ -139,7 +148,7 @@ public class Environment : MonoBehaviour {
                     safetyScore *= walkableNeighboursCount;
 
                     float oldSafetyScore = safetyMapBySpecies[speciesInDanger][inViewCoord.x, inViewCoord.y];
-                    if (evaluatedTile[inViewCoord.x, inViewCoord.y] == false || oldSafetyScore < safetyScore)
+                    if (evaluatedTile[inViewCoord.x, inViewCoord.y] == false || oldSafetyScore > safetyScore)
                     {
                         safetyMapBySpecies[speciesInDanger][inViewCoord.x, inViewCoord.y] = safetyScore;
                         evaluatedTile[inViewCoord.x, inViewCoord.y] = true;
@@ -147,12 +156,28 @@ public class Environment : MonoBehaviour {
                 }
             }
         }
-        
+
+        float safetyScoreTrulySafeOrNoInfo = safetyMapBySpecies[speciesInDanger].Cast<float>().Max() + 1;
+
+        // clear animal safety map
+        for (int i = 0; i < safetyMapBySpecies[speciesInDanger].GetLength(0); i++)
+        {
+            for (int j = 0; j < safetyMapBySpecies[speciesInDanger].GetLength(1); j++)
+            {
+                if (evaluatedTile[i, j] == true)
+                    continue;
+                if (walkable[i, j] == false)
+                    continue;
+
+                safetyMapBySpecies[speciesInDanger][i, j] = safetyScoreTrulySafeOrNoInfo;
+            }
+        }
+
         if (speciesInDanger == Species.Rabbit)
         {
             List<float> flattened = safetyMapBySpecies[speciesInDanger].Cast<float>().ToList();
             float maxSafetyScore = flattened.Max();
-            Debug.Log($"Recalculated safety map for species: {speciesInDanger}\nCall reason: {callReason}");
+            // Debug.Log($"Recalculated safety map for species: {speciesInDanger}\nCall reason: {callReason}");
         }
     }
 
@@ -175,20 +200,30 @@ public class Environment : MonoBehaviour {
         }
     }
 
-    public Coord? ChooseReproductionSpace (Coord coord, float reproductionRadious)
+    public Coord? SenceReproductionSpace (Coord coord, float reproductionRadious)
     {
-        // get pseudo random number generator
-        var spawnPrng = new System.Random(seed);
-
         // GetUnoccupiedNeighbours
-        List<Coord> spawnCoords = spawnableCoords.Where(c => Coord.Distance(c, coord) <= reproductionRadious).ToList();
+        List<Coord> notOcupiedCoordsInRadious = new List<Coord> ();
+        // add all the species in radious positions as coordinates to not spawnable
+        foreach (Species species in speciesMaps.Keys)
+        {
+            notOcupiedCoordsInRadious.Union(speciesMaps[species].GetUnoccupiedNeighbours(coord, reproductionRadious)).ToList();
+        }
 
-        // entity neighbourhood fully occupied
+        List<Coord> spawnCoords = notOcupiedCoordsInRadious.Union(
+            spawnableCoords.Where(
+                c => Coord.Distance(c, coord) <= reproductionRadious
+            ).ToList()
+        ).ToList();
+
+        // entity has no spawnable tiles in range
         if (spawnCoords.Count() == 0)
             return null;
 
-        // get random possible pawn coordinates and return them
-        int offspringCoordIndex = spawnPrng.Next(0, spawnCoords.Count());
+        // get random possible spawn coordinates and return them
+        int offspringCoordIndex = prng.Next(0, spawnCoords.Count);
+
+        spawnableCoords.Remove(spawnCoords[offspringCoordIndex]);
         return spawnCoords[offspringCoordIndex];
     }
 
@@ -200,7 +235,7 @@ public class Environment : MonoBehaviour {
             return;
 
         // Remove new spawn coordinates from spawnable list
-        // if spawn possible
+        // if spawn possible and entity spawned can not move
         if (spawnableCoords.Any(c => c == spawnCoord))
         {
             // Add new entity
@@ -209,10 +244,10 @@ public class Environment : MonoBehaviour {
             spawnableCoords.Remove(spawnCoord);
         } else
         {
-            Debug.LogError($"Spawn was not possible for entity of species: {entity.species.ToString()} at coorinates: {spawnCoord.ToString()}");
+            // Debug.LogWarning($"Spawn was not possible for entity of species: {entity.species.ToString()} at coorinates: {spawnCoord.ToString()}");
         }
 
-        Debug.Log("Entity spawned");
+        // Debug.Log("Entity spawned");
         // recalculate safetyMaps
         RecalculateDangerMaps(entity, $"{entity.species} spawned");
     }
@@ -222,9 +257,12 @@ public class Environment : MonoBehaviour {
         speciesMaps[entity.species].Move (entity, from, to);
         // Remove new coordinates from spawnable and add old ones
         spawnableCoords.Remove(to);
-        spawnableCoords.Add(from);
+        // If there is a plant at "from" coords do not add them to spawnable ones
+        if (speciesMaps[Species.Plant].GetEntities(from, 0.5f).Count == 0)
+        
+            spawnableCoords.Add(from);
 
-        Debug.Log("Entity moved");
+        // Debug.Log("Entity moved");
         // recalculate safetyMaps
         RecalculateDangerMaps(entity, $"{entity.species} moved");
     }
@@ -235,7 +273,7 @@ public class Environment : MonoBehaviour {
         // Add freed coordinates to spawnable
         spawnableCoords.Add(entity.coord);
 
-        Debug.Log("Entity died");
+        // Debug.Log("Entity died");
         // recalculate safetyMaps
         RecalculateDangerMaps(entity, $"{entity.species} died");
     }
@@ -320,7 +358,11 @@ public class Environment : MonoBehaviour {
             var visibleAnimal = (Animal) visibleEntities[i];
             if (visibleAnimal != self && visibleAnimal.genes.isMale != self.genes.isMale) {
                 if (visibleAnimal.currentAction == CreatureAction.SearchingForMate) {
-                    potentialMates.Add (visibleAnimal);
+                    // judge if animal resire each other 
+                    if (visibleAnimal.JudgeMate(coord, self) && self.JudgeMate(visibleAnimal.coord, visibleAnimal))
+                    {
+                        potentialMates.Add (visibleAnimal);
+                    }
                 }
 
             }
@@ -358,17 +400,14 @@ public class Environment : MonoBehaviour {
     }
 
     public static Surroundings Sense (Coord coord) {
-        var closestPlant = speciesMaps[Species.Plant].ClosestEntity (coord, Animal.maxViewDistance);
-        var surroundings = new Surroundings ();
+        var closestPlant = speciesMaps[Species.Plant].ClosestEntity(coord, Animal.maxViewDistance);
+        var surroundings = new Surroundings();
         surroundings.nearestFoodSource = closestPlant;
         surroundings.nearestWaterTile = closestVisibleWaterMap[coord.x, coord.y];
-        // TODO: calculate walkable tiles in view
         surroundings.moveDestinations = walkableCoords.Where(
             c => EnvironmentUtility.TileIsVisibile(coord.x, coord.y, c.x, c.y) &&
             Animal.maxViewDistance >= Coord.Distance(coord, c)
         ).ToList();
-
-        // TODO: calculate here the closest safest tile
 
         return surroundings;
     }
@@ -478,7 +517,7 @@ public class Environment : MonoBehaviour {
             int dangerMapBySpeciesRowCount = walkable.GetLength(0);
             int dangerMapBySpeciesColCount = walkable.GetLength(1);
             // initialize danger map array with default float values
-            Debug.Log($"Initializing safety maps");
+            // Debug.Log($"Initializing safety maps");
             safetyMapBySpecies[preySpecies] = new float[dangerMapBySpeciesRowCount, dangerMapBySpeciesColCount];
         }
 
@@ -605,7 +644,7 @@ public class Environment : MonoBehaviour {
         foreach (var pop in initialPopulations) {
             for (int i = 0; i < pop.count; i++) {
                 if (spawnCoords.Count == 0) {
-                    Debug.Log ("Ran out of empty tiles to spawn initial population");
+                    // Debug.Log ("Ran out of empty tiles to spawn initial population");
                     break;
                 }
                 int spawnCoordIndex = spawnPrng.Next (0, spawnCoords.Count);
@@ -630,9 +669,9 @@ public class Environment : MonoBehaviour {
     // spawn new plants descendant from current ones
     public void SpawnOffspring(LivingEntity entity)
     {
-        Debug.Log($"Trying to spawn new offspring for living entity of species: {entity.species}");
+        // Debug.Log($"Trying to spawn new offspring for living entity of species: {entity.species}");
         // Get new offspring spawn position
-        Coord? coord = ChooseReproductionSpace(entity.coord, entity.offspringSpawnRadious);
+        Coord? coord = SenceReproductionSpace(entity.coord, entity.offspringSpawnRadious);
 
         // if there are no spawnable map regions left
         if (!coord.HasValue) {
@@ -646,7 +685,7 @@ public class Environment : MonoBehaviour {
         offspring.Init(coord.Value);
         // register spawning new offspring
         RegisterSpawn(offspring, coord.Value);
-        Debug.Log($"Spawned new offspring for living entity of species: {entity.species}");
+        // Debug.Log($"Spawned new offspring for living entity of species: {entity.species}");
     }
 
 
@@ -686,7 +725,6 @@ public class Environment : MonoBehaviour {
     private void OnDrawGizmosSelected()
     {
         // draw danger map for Rabbits
-
         foreach (Species species in safetyMapBySpecies.Keys)
         {
             if (species != Species.Rabbit)
@@ -699,7 +737,6 @@ public class Environment : MonoBehaviour {
             {
                 maxSafetyScore = 1f;
             }
-            Debug.Log($"Drawing safety map for species: {species}, MaxSafetyScore: {maxSafetyScore}");
 
             for (int i = 0; i < safetyMapBySpecies[species].GetLength(0); i++)
             {
@@ -720,12 +757,83 @@ public class Environment : MonoBehaviour {
                         }
                         else
                         {
-                            Gizmos.DrawWireCube(Environment.tileCentres[i, j], new Vector3(cubeSize, 0.1f, cubeSize));
+                            // Gizmos.DrawWireCube(Environment.tileCentres[i, j], new Vector3(cubeSize, 0.1f, cubeSize));
                         }
                     }
                
                 }
             }
         }
+
+        // indicate animal current state
+        foreach (Species species in speciesMaps.Keys)
+        {
+            if (species == Species.Plant || species == Species.Undefined)
+                continue;
+
+
+            List<LivingEntity>[,] map = speciesMaps[species].map;
+
+            float stateGizmoColorAlpha = 0.8f;
+            float stateGizmoRadious = 0.3f;
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    foreach (LivingEntity entity in map[i, j])
+                    {
+                        Animal animal = (Animal)entity;
+
+                        if (animal.currentAction == CreatureAction.Reproducing)
+                        {
+                            Gizmos.color = Color.green * new Color(1f, 1f, 1f, stateGizmoColorAlpha);
+                        }
+                        else if (animal.currentAction == CreatureAction.SearchingForMate)
+                        {
+                            Gizmos.color = Color.magenta * new Color(1f, 1f, 1f, stateGizmoColorAlpha);
+                        }
+                        else
+                        {
+                            Gizmos.color = Color.blue * new Color(1f, 1f, 1f, stateGizmoColorAlpha);
+                        }
+
+                        Gizmos.DrawSphere(animal.transform.position + new Vector3(0f, 1f, 0f), stateGizmoRadious);
+                        Gizmos.color *= new Color(1f, 1f, 1f, 1f);
+                        Gizmos.DrawWireSphere(animal.transform.position + new Vector3(0f, 1f, 0f), stateGizmoRadious);
+                    }
+                }
+            }
+        }
+
+        // draw gizmo lines between animals that are current mates and going to each other
+        foreach (Species species in speciesMaps.Keys)
+        {
+            // draw this gizmo only for foxes and rabbits
+            if (species != Species.Rabbit ||
+                species != Species.Fox)
+                continue;
+
+            List<LivingEntity> alreadyConsidered = new List<LivingEntity>();
+            List<LivingEntity>[,] map = speciesMaps[species].map;
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    foreach (LivingEntity entity in map[i, j])
+                    {
+                        Animal animal = (Animal)entity;
+                        Animal? currMate = animal.GetCurrMate();
+                        if (currMate != null && !alreadyConsidered.Contains(animal))
+                        {
+                            Gizmos.color = Color.green;
+                            Gizmos.DrawLine(animal.transform.position, Environment.tileCentres[currMate.coord.x, currMate.coord.y]);
+                            alreadyConsidered.Add(animal);
+                            alreadyConsidered.Add(currMate);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

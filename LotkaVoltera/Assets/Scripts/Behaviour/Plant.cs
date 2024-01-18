@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [SelectionBase]
@@ -36,9 +37,6 @@ public class Plant : LivingEntity {
 
     private void Start()
     {
-        // Plant specific Living Entity config
-        offspringSpawnRadious = 1.5f;
-
         // Plant config
         // set plant game object scale before displaying it on screen for the first time
         transform.localScale = Vector3.one * amountRemaining;
@@ -83,8 +81,6 @@ public class Plant : LivingEntity {
 
     private void Regrow()
     {
-        Debug.Log($"Regrowing");
-
         amountRemaining += Time.deltaTime * (regrowAmmount / regrowDuration); // fraction by which the plant should grow
         amountRemaining = Mathf.Clamp01(amountRemaining);
         transform.localScale = Vector3.one * amountRemaining; // adjust scale to curr size
@@ -122,6 +118,17 @@ public class Plant : LivingEntity {
     public float AmountRemaining {
         get {
             return amountRemaining;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // draw gizmos for tiles in plant can reproduce to
+        foreach (Coord coord in Environment.spawnableCoords.Where(c => Coord.Distance(c, coord) <= offspringSpawnRadious).ToList())
+        {
+            Gizmos.color = Color.green * new Color(1f, 1f, 1f, 0.7f);
+            float cubeSize = 1f;
+            Gizmos.DrawCube(Environment.tileCentres[coord.x, coord.y], new Vector3(cubeSize, 0.1f, cubeSize));
         }
     }
 }

@@ -8,6 +8,7 @@
     Eating,
     Drinking,
     SearchingForMate,
+    GoingToMate,
     Reproducing,
     FleeingFromDanger,
     Distressed
