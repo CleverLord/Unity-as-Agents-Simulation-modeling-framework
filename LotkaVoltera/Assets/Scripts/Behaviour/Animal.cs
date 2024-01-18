@@ -94,7 +94,7 @@ public class Animal : LivingEntity
     [Range(1, 100)]
     public float growDuration = 20;
 
-    [Range(1, 100)]
+    [Range(1, 10)]
     public int maxOffspringPerMating = 2;
     [Range(1, 100)]
     public float minTimeBetweenReproducing = 40f;
@@ -166,7 +166,8 @@ public class Animal : LivingEntity
         hunger += Time.deltaTime * 1f / timeToDeathByHunger;
         thirst += Time.deltaTime * 1f / timeToDeathByThirst;
         // increase libido
-        libido += Time.deltaTime * 1f / minTimeBetweenReproducing;
+        if (maturity >= 1f)
+            libido += Time.deltaTime * 1f / minTimeBetweenReproducing;
 
         // Animate movement. After moving a single tile, the animal will be able to choose its next action
         if (animatingMovement)
@@ -186,12 +187,12 @@ public class Animal : LivingEntity
 
         if (hunger >= 1)
         {
-            Debug.Log($"{species} died of hunger");
+            // Debug.Log($"{species} died of hunger");
             Die(CauseOfDeath.Hunger);
         }
         else if (thirst >= 1)
         {
-            Debug.Log($"{species} died of thirst");
+            // Debug.Log($"{species} died of thirst");
             Die(CauseOfDeath.Thirst);
         }
     }
@@ -231,7 +232,7 @@ public class Animal : LivingEntity
     // Get consumed in whole
     public void Consume()
     {
-        Debug.Log($"{species} was eaten");
+        // Debug.Log($"{species} was eaten");
         Die(CauseOfDeath.Eaten);
     }
 
@@ -252,7 +253,7 @@ public class Animal : LivingEntity
         // currentAction = CreatureAction.FleeingFromDanger;
 
         // if there are no dengares near by
-        if (lastDangerSeenTime + panicDuration > Time.time && predatorsInView.Count == 0 && fleeingKinInView.Count == 0)
+        if ((lastDangerSeenTime + panicDuration) <= Time.time && predatorsInView.Count == 0 && fleeingKinInView.Count == 0)
         {
             bool stillThirsty = currentAction == CreatureAction.Drinking && thirst > 0;
             bool stillHungry = currentAction == CreatureAction.Eating && hunger > 0 && foodTarget != null;
@@ -264,23 +265,24 @@ public class Animal : LivingEntity
                 bool currentlyEating = currentAction == CreatureAction.Eating && foodTarget && hunger > 0;
                 if (hunger >= thirst || currentlyEating && thirst < hungerThreshold)
                 {
-                    Debug.LogWarning($"{species} searching for food");
+                    // Debug.LogWarning($"{species} searching for food");
                     FindFood();
                 }
                 // More thirsty than hungry
                 else
                 {
-                    Debug.LogWarning($"{species} searching for water");
+                    // Debug.LogWarning($"{species} searching for water");
                     FindWater();
                 }
             } else if (mateTarget == null && libido >= 1f && CanReproduce())
-            {                
+            {
                 FindMate();
             }
         }
         else
         {
-            lastDangerSeenTime = Time.time;
+            if (predatorsInView.Count > 0 || fleeingKinInView.Count > 0)
+                lastDangerSeenTime = Time.time;
             FindSaferGround();
         }
 
@@ -311,7 +313,10 @@ public class Animal : LivingEntity
         bool isMature = potentialMate.CanReproduce();
         bool isOppositeSex = genes.isMale != potentialMate.genes.isMale;
         bool isSearchingForMate = potentialMate.currentAction == CreatureAction.SearchingForMate;
-        bool isParent = (this == mother || this == father);
+        bool isParent = (potentialMate == mother || potentialMate == father);
+        bool hasTheSameMother = (potentialMate.mother != null && potentialMate.mother == mother);
+        bool hasTheSameFather = (potentialMate.father != null && potentialMate.father == father);
+        bool isSibling = hasTheSameMother && hasTheSameFather;
         // TODO: consider also: isSibling, isChild
 
         // Calculate if kin geneticaly desired
@@ -398,7 +403,7 @@ public class Animal : LivingEntity
                 CreatePath(dangerEscapeTarget);
             }
         } else {
-            Debug.LogWarning($"Animal of species: {species} could not find safer position in view, now Exploring!");
+            // Debug.LogWarning($"Animal of species: {species} could not find safer position in view, now Exploring!");
             currentAction = CreatureAction.Exploring;
         }
     }
@@ -574,7 +579,7 @@ public class Animal : LivingEntity
                 else if (diet == Species.Fox)
                 {
                     // At the moment foxes can not get eaten
-                    Debug.LogError("Not implemented Eating interaction for eating a Fox!");
+                    // Debug.LogError("Not implemented Eating interaction for eating a Fox!");
                 }
                 else if (diet == Species.Plant)
                 {
@@ -584,7 +589,7 @@ public class Animal : LivingEntity
                 }
                 else
                 {
-                    Debug.LogError("Not implemented Eating interaction!");
+                    // Debug.LogError("Not implemented Eating interaction!");
                 }
             }
         }
@@ -603,7 +608,7 @@ public class Animal : LivingEntity
                 if (genes.isMale == false)
                 {
                     // if female then spawn offspring
-                    for (int i = 0; i < (int)GetRandomFloat(new System.Random(), 0f, maxOffspringPerMating); i++)
+                    for (int i = 0; i < (int)GetRandomFloat(new System.Random(), 1f, maxOffspringPerMating); i++)
                     {
                         // try to produce offspring
                         reproduce(this);
