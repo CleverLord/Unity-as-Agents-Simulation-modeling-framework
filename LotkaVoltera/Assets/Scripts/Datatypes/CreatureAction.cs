@@ -1,4 +1,5 @@
-﻿public enum CreatureAction {
+﻿public enum CreatureAction
+{
     None,
     Resting,
     Exploring,
