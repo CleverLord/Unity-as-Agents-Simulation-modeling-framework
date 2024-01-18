@@ -131,7 +131,7 @@ MonoBehaviour:
   colourMaterialIndex: 0
   species: 2
   material: {fileID: 2100000, guid: 02a4e750351384d329bc471b9575ec7b, type: 2}
-  offspringSpawnRadious: 3.07
+  offspringSpawnRadious: 5.62
   coord:
     x: 0
     y: 0
@@ -145,4 +145,4 @@ MonoBehaviour:
   growDuration: 84.4
   growDelay: 5.5
   minReproductiveMaturity: 1
-  reproductionDelay: 34.9
+  reproductionDelay: 36.7

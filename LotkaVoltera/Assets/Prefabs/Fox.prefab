@@ -133,8 +133,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colourMaterialIndex: 0
   species: 8
-  material: {fileID: 2100000, guid: 74bd769fddce2504f9de579af0793353, type: 2}
-  offspringSpawnRadious: 1.93
+  material: {fileID: 2100000, guid: 4f1aac096a6de4fa19b20fbb6e6c6e33, type: 2}
+  offspringSpawnRadious: 3.27
   coord:
     x: 0
     y: 0
@@ -144,17 +144,17 @@ MonoBehaviour:
     y: 0
   maturity: 1
   diet: 4
-  currentAction: 0
-  maleColour: {r: 0.6792453, g: 0.1505874, b: 0.1505874, a: 0}
+  currentAction: 2
+  maleColour: {r: 0.754717, g: 0, b: 0, a: 0}
   femaleColour: {r: 0.7725491, g: 0.45882356, b: 0.2509804, a: 1}
   distressToDangerPreference: 1
-  thirstThreshold: 0.3
-  hungerThreshold: 0.5
-  reproductionTime: 5
+  thirstThreshold: 0.818
+  hungerThreshold: 0.636
+  reproductionTime: 10.8
   hunger: 0
   thirst: 0
   panicDuration: 2
-  growDuration: 62.5
-  maxOffspringPerMating: 6
-  minTimeBetweenReproducing: 34.4
+  growDuration: 66.3
+  maxOffspringPerMating: 4
+  minTimeBetweenReproducing: 38.3
   libido: 0
