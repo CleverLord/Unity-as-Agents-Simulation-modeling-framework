@@ -146,11 +146,12 @@ namespace TerrainGeneration
             // if chart has no datapoints
             if (dataPoints.Length == 0)
                 return;
-            // Update X-axis data text based on the current width    
-            xAxisScaleTooltip.text = $"{dataPoints[0].Count:F2}";
+            
+            // Update X-axis data text based on the current width
+            xAxisScaleTooltip.text = $"{timestamps[timestamps.Count - 1]:F2}";
 
             // Update Y-axis data text based on the current maxVisibleValue
-            yAxisScaleTooltip.text = $"{timestamps[timestamps.Count-1]:F2}";
+            yAxisScaleTooltip.text = $"{dataPoints[maxVisibleValueLineIndex][dataPoints[maxVisibleValueLineIndex].Count - 1]:F2}";
         }
 
         // register new data points to apropriate indexes

@@ -24,6 +24,7 @@ public class Environment : MonoBehaviour {
 
     [Header ("Populations")]
     public Population[] initialPopulations;
+    public static Dictionary<Species, Transform> speciesHolders;
 
     [Header ("Debug")]
     public bool showMapDebug;
@@ -223,7 +224,6 @@ public class Environment : MonoBehaviour {
         // get random possible spawn coordinates and return them
         int offspringCoordIndex = prng.Next(0, spawnCoords.Count);
 
-        spawnableCoords.Remove(spawnCoords[offspringCoordIndex]);
         return spawnCoords[offspringCoordIndex];
     }
 
@@ -236,7 +236,7 @@ public class Environment : MonoBehaviour {
 
         // Remove new spawn coordinates from spawnable list
         // if spawn possible and entity spawned can not move
-        if (spawnableCoords.Any(c => c == spawnCoord))
+        if (spawnableCoords.Any(c => c == spawnCoord)) // TODO: use .Contains()
         {
             // Add new entity
             speciesMaps[entity.species].Add(entity, spawnCoord);
@@ -637,11 +637,15 @@ public class Environment : MonoBehaviour {
     }
 
     void SpawnInitialPopulations () {
+        // initialize species holders dictionary
+        speciesHolders = new Dictionary<Species, Transform> ();
 
         var spawnPrng = new System.Random (seed);
         var spawnCoords = new List<Coord> (walkableCoords);
 
         foreach (var pop in initialPopulations) {
+            speciesHolders[pop.prefab.species] = new GameObject($"{pop.prefab.species}Holder").transform; ;
+
             for (int i = 0; i < pop.count; i++) {
                 if (spawnCoords.Count == 0) {
                     // Debug.Log ("Ran out of empty tiles to spawn initial population");
@@ -651,7 +655,7 @@ public class Environment : MonoBehaviour {
                 Coord coord = spawnCoords[spawnCoordIndex];
                 spawnCoords.RemoveAt (spawnCoordIndex);
 
-                var entity = Instantiate (pop.prefab);
+                var entity = Instantiate (pop.prefab, speciesHolders[pop.prefab.species]);
                 var entityScript = entity.GetComponent<LivingEntity>();
                 // register callback to method
                 entityScript.reproduce += SpawnOffspring;
