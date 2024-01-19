@@ -106,7 +106,7 @@ public class Plant : LivingEntity {
 
     public override LivingEntity GetOffspring()
     {
-        Plant offspring = Instantiate(this.gameObject).GetComponent<Plant>();
+        Plant offspring = Instantiate(this.gameObject, Environment.speciesHolders[species]).GetComponent<Plant>();
         offspring.amountRemaining = 0.2f;
         // scale game object to apropriate size
         offspring.transform.localScale = Vector3.one * amountRemaining;

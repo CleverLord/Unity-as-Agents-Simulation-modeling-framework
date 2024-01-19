@@ -206,7 +206,7 @@ public class Animal : LivingEntity
 
     public override LivingEntity GetOffspring()
     {
-        Animal offspring = Instantiate(this.gameObject).GetComponent<Animal>();        
+        Animal offspring = Instantiate(this.gameObject, Environment.speciesHolders[species]).GetComponent<Animal>();        
         // set initial state based on parents
         offspring.thirst = 0f;
         offspring.hunger = 0f;
@@ -498,8 +498,11 @@ public class Animal : LivingEntity
                 } else
                 {
                     CreatePath(mateTarget.coord);
-                    StartMoveToCoord(path[pathIndex]);
-                    pathIndex++;
+                    if (path != null)
+                    {
+                        StartMoveToCoord(path[pathIndex]);
+                        pathIndex++;
+                    }
                 }
                 break;
             case CreatureAction.FleeingFromDanger:
@@ -531,12 +534,16 @@ public class Animal : LivingEntity
 
     protected void CreatePath(Coord target)
     {
-        // Create new path if current is not already going to target
-        if (path == null || pathIndex >= path.Length || (path[path.Length - 1] != target || path[pathIndex - 1] != moveTargetCoord))
-        {
-            path = EnvironmentUtility.GetPath(coord.x, coord.y, target.x, target.y);
-            pathIndex = 0;
-        }
+        // Do not create a new path on those conditions
+        // path already exists
+        // animal has not yet reached the end of the path
+        // the path is already leading to target
+        // the path is already leading to next move target
+        if (path != null && pathIndex < path.Length && (pathIndex > 0 && (path[path.Length - 1] == target && path[pathIndex - 1] == moveTargetCoord)))
+            return;
+        // Create path if above conditions were not met
+        path = EnvironmentUtility.GetPath(coord.x, coord.y, target.x, target.y);
+        pathIndex = 0;
     }
 
     protected void StartMoveToCoord(Coord target)
@@ -620,6 +627,7 @@ public class Animal : LivingEntity
                 libido = 0f;
                 mateTarget = null;
                 path = null;
+                pathIndex = 0;
             }
         }
     }
